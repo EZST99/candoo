@@ -26,6 +26,13 @@
       "bundler": "metro",
       "output": "server"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://candoo.vercel.app"
+        }
+      ]
+    ]
   }
 }
