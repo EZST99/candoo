@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "migration:generate": "drizzle-kit generate:mysql --schema=./common/db/schema.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.30.6",
