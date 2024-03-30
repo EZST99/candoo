@@ -32,6 +32,12 @@
         {
           "origin": "https://candoo.vercel.app"
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["assets/Inter.ttf"]
+        }
       ]
     ]
   }
