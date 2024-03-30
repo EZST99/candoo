@@ -6,10 +6,12 @@ interface User {
   username: string;
 }
 
-const AuthContext = createContext<{
+interface AuthProviderData {
   user: User | null;
   setSessionId: (sessionId: string | null) => void;
-}>({ user: null, setSessionId: () => console.log("not initialized") });
+}
+
+const AuthContext = createContext<AuthProviderData>({ user: null, setSessionId: () => console.log("not initialized") });
 export const useUser = () => useContext(AuthContext);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
