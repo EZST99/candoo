@@ -1,22 +1,13 @@
-import {
-  int,
-  mysqlEnum,
-  mysqlTable,
-  uniqueIndex,
-  varchar,
-  serial,
-  text,
-  mysqlSchema,
-  date,
-} from "drizzle-orm/mysql-core";
-import db from "./connection";
+import { date, int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 //export const mySchema = mysqlSchema("my_schema");
 
 export const users = mysqlTable("users", {
   user_id: int("user_id").primaryKey().autoincrement(),
   username: varchar("username", { length: 256 }).unique().notNull(),
+  email: varchar("email", { length: 256 }).unique().notNull(),
   password: varchar("password", { length: 256 }).notNull(),
+  salt: varchar("salt", { length: 256 }).notNull(),
   session: varchar("session", { length: 256 }).unique(),
 });
 
