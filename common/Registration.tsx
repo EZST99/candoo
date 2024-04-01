@@ -64,7 +64,7 @@ function Registration() {
         placeholder="Confirm Password"
         secureTextEntry
       />
-      <Button title="Register" onPress={handleRegistration} />
+      <Button title="Sign Up" onPress={handleRegistration} />
     </SafeAreaView>
   );
 }
