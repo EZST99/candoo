@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import Login from "./Login";
+import Welcome from "./Welcome";
 
 interface User {
   username: string;
@@ -44,7 +44,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, setSessionId }}>
-      {user === null ? <Login /> : children}
+      {user === null ? <Welcome /> : children}
     </AuthContext.Provider>
   );
 }

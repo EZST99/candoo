@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Button, Text, TextInput } from "react-native";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "./AuthProvider";
+import Button from "./components/Button";
+import Input from "./components/Input";
 //Import Login Funktion from Login.tsx um nach Registrierung automatisch einzuloggen
 //import { handleLogin } from "./Login";
 
 function Registration() {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,14 +26,14 @@ function Registration() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ username, email, password }),
     })
       .then((response) => response.json())
       .then((data) => {
         // Erfolgreiche Registrierung
         console.log("Registration successful:", data);
         //Automatisches Einloggen nach erfolgreicher Registrierung
-        //Login();
+        setSessionId(data.sessionId);
       })
       .catch((error) => {
         console.error("Registration failed:", error);
@@ -41,24 +43,24 @@ function Registration() {
   return (
     <SafeAreaView>
       <Text>Registration</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
+      <Input
+        value={username}
+        onChangeText={setUsername}
+        placeholder="Username"
       />
-      <TextInput
+      <Input
         value={email}
         onChangeText={setEmail}
         placeholder="Email"
         keyboardType="email-address"
       />
-      <TextInput
+      <Input
         value={password}
         onChangeText={setPassword}
         placeholder="Password"
         secureTextEntry
       />
-      <TextInput
+      <Input
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         placeholder="Confirm Password"
