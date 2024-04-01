@@ -9,17 +9,18 @@ import {
   mysqlSchema,
   date,
 } from "drizzle-orm/mysql-core";
+import db from "./connection";
 
-export const mySchema = mysqlSchema("my_schema");
+//export const mySchema = mysqlSchema("my_schema");
 
-export const users = mySchema.table("users", {
+export const users = mysqlTable("users", {
   user_id: int("user_id").primaryKey().autoincrement(),
   username: varchar("username", { length: 256 }).unique().notNull(),
   password: varchar("password", { length: 256 }).notNull(),
   session: varchar("session", { length: 256 }).unique(),
 });
 
-export const tasks = mySchema.table("tasks", {
+export const tasks = mysqlTable("tasks", {
   task_id: int("task_id").primaryKey().autoincrement(),
   user_id: int("user_id").references(() => users.user_id),
   taskname: varchar("taskname", { length: 256 }).notNull(),
