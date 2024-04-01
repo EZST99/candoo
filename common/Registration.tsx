@@ -3,7 +3,7 @@ import { Button, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "./AuthProvider";
 //Import Login Funktion from Login.tsx um nach Registrierung automatisch einzuloggen
-//import { Login } from "./Login";
+//import { handleLogin } from "./Login";
 
 function Registration() {
   const [name, setName] = useState("");
@@ -13,7 +13,7 @@ function Registration() {
   // declared but value never read
   const { setSessionId } = useUser();
 
-  async function Registration() {
+  async function handleRegistration() {
     if (password !== confirmPassword) {
       console.error("Passwords do not match");
       return;
@@ -64,7 +64,7 @@ function Registration() {
         placeholder="Confirm Password"
         secureTextEntry
       />
-      <Button title="Register" onPress={Registration} />
+      <Button title="Register" onPress={handleRegistration} />
     </SafeAreaView>
   );
 }
