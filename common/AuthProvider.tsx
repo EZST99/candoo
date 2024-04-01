@@ -11,7 +11,10 @@ interface AuthProviderData {
   setSessionId: (sessionId: string | null) => void;
 }
 
-const AuthContext = createContext<AuthProviderData>({ user: null, setSessionId: () => console.log("not initialized") });
+const AuthContext = createContext<AuthProviderData>({
+  user: null,
+  setSessionId: () => console.log("not initialized"),
+});
 export const useUser = () => useContext(AuthContext);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -22,7 +25,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     console.log("sessionId", sessionId);
-    if (sessionId === null) {
+    if (sessionId == null) {
       setUser(null);
       return;
     }
