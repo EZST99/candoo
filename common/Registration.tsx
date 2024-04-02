@@ -1,13 +1,17 @@
+import { AntDesign } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 import { useUser } from "./AuthProvider";
 import Button from "./components/Button";
 import Input from "./components/Input";
 //Import Login Funktion from Login.tsx um nach Registrierung automatisch einzuloggen
 //import { handleLogin } from "./Login";
 
-function Registration() {
+interface RegistrationProps {
+  back: () => void;
+}
+
+function Registration({ back }: RegistrationProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,34 +45,86 @@ function Registration() {
   }
 
   return (
-    <SafeAreaView>
-      <Text>Registration</Text>
-      <Input
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
-      />
-      <Input
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        keyboardType="email-address"
-      />
-      <Input
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-      />
-      <Input
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        placeholder="Confirm Password"
-        secureTextEntry
-      />
-      <Button title="Sign Up" onPress={handleRegistration} />
-    </SafeAreaView>
+    <>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <View>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={back}
+            />
+          </View>
+          <Text style={styles.title}>Create account</Text>
+        </View>
+        <View style={styles.form}>
+          <Input
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+            autoComplete="username-new"
+          />
+          <Input
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoComplete="email"
+          />
+          <Input
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            autoComplete="new-password"
+            secureTextEntry
+          />
+          <Input
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm Password"
+            secureTextEntry
+          />
+        </View>
+      </View>
+      <View style={styles.btn}>
+        <Button title="Let's get started" onPress={handleRegistration} />
+      </View>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    padding: 24,
+  },
+  form: {
+    display: "flex",
+    gap: 10,
+  },
+  btn: {
+    position: "absolute",
+    bottom: 24,
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: "Inter",
+    fontWeight: "700",
+    color: "#000000",
+    flex: 1,
+    textAlign: "center",
+    transform: [{ translateX: -12 }],
+  },
+});
 
 export default Registration;
