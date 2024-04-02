@@ -6,7 +6,11 @@ import { useUser } from "./AuthProvider";
 import Button from "./components/Button";
 import Input from "./components/Input";
 
-function Login() {
+interface LoginProps {
+  back: () => void;
+}
+
+function Login({ back }: LoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { setSessionId } = useUser();
@@ -31,15 +35,17 @@ function Login() {
   }
 
   return (
-    <View style={styles.page}>
-      <View style={styles.header}>
-        <View>
-          <AntDesign name="arrowleft" size={24} color="black" />
-        </View>
-        <Text style={styles.headerContent}>candoo</Text>
-      </View>
+    <>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
+          <View>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={back}
+            />
+          </View>
           <Text style={styles.title}>Login</Text>
         </View>
         <View style={styles.form}>
@@ -47,11 +53,13 @@ function Login() {
             value={username}
             onChangeText={setUsername}
             placeholder="Username"
+            autoComplete="username"
           />
           <Input
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            autoComplete="current-password"
             secureTextEntry
           />
         </View>
@@ -59,44 +67,13 @@ function Login() {
       <View style={styles.btn}>
         <Button title="Let's get started" onPress={handleLogin} />
       </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    display: "flex",
-    height: "100%",
-  },
-  header: {
-    backgroundColor: "#ff0000b8",
-    height: 180,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerContent: {
-    fontSize: 60,
-    lineHeight: 73,
-    fontFamily: "Inter",
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  titleContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    lineHeight: 29,
-    fontFamily: "Inter",
-    fontWeight: "700",
-    color: "#000000",
-    marginBottom: 20,
-  },
   container: {
-    display: "flex",
+    height: "100%",
     padding: 24,
   },
   form: {
@@ -105,11 +82,25 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: "absolute",
-    bottom: 0,
+    bottom: 24,
     width: "100%",
-    padding: 24,
     display: "flex",
     alignItems: "center",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: "Inter",
+    fontWeight: "700",
+    color: "#000000",
+    flex: 1,
+    textAlign: "center",
+    transform: [{ translateX: -12 }],
   },
 });
 
