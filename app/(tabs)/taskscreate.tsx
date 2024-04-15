@@ -1,10 +1,12 @@
 import { AntDesign } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform} from "react-native";
 import Button from "../../common/components/Button";
 import Input from "../../common/components/Input";
 // npm i react-native-date-picker
-import DatePicker from 'react-native-date-picker';
+//import DatePicker from 'react-native-date-picker';
+// npm install @react-native-community/datetimepicker --save
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface Props {
     back: () => void;
@@ -14,9 +16,22 @@ function taskCreation({ back }: Props) {
     const [taskname, setTaskname] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState(new Date());
-    const [open, setOpen] = useState(false);
+    const [show, setShow] = useState(false);
     const [importance, setImportance] = useState("");
     const [urgency, setUrgency] = useState("");
+
+    const toggleDatepicker = () => {
+        setShow(!show);
+    }
+
+    // const onChange = ({type}, selectedDate) => {
+    //     if (type == "set") {
+    //         const currentDate = selectedDate || dueDate;
+    //         setDueDate(currentDate);
+    //     } else {
+    //         toggleDatepicker();
+    //     }
+    // }
   
     async function handleTaskCreation() {
       fetch("/api/taskCreation", {
@@ -61,7 +76,16 @@ function taskCreation({ back }: Props) {
               onChangeText={setDescription}
               placeholder="Description"
             />
-            <Button title="Due Date" onPress={() => setOpen(true)} />
+            <Button title="Due Date" onPress={() => setShow(true)} />
+            {/* {show && (
+            <DateTimePicker
+            mode="date"
+            value={dueDate}      
+            onChange={onChange}
+            />)} */}
+            
+
+            {/* <Button title="Due Date" onPress={() => setOpen(true)} />
             <DatePicker
               modal
               open={open}
@@ -73,7 +97,7 @@ function taskCreation({ back }: Props) {
             onCancel={() => {
                 setOpen(false)
               }}
-            />
+            /> */}
             <Input
               value={importance}
               onChangeText={setImportance}
@@ -87,7 +111,7 @@ function taskCreation({ back }: Props) {
           </View>
         </View>
         <View style={styles.btn}>
-          <Button title="Let's get started" onPress={handleTaskCreation} />
+          <Button title="Create Task" onPress={handleTaskCreation} />
         </View>
       </>
     );
