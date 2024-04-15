@@ -1,5 +1,6 @@
 import connectDb from "../../common/db/connection";
 import { tasks } from "../../common/db/schema";
+import { eq } from 'drizzle-orm';
 
 export async function DELETE(request: Request) {
   console.log("Task deletion");
@@ -7,7 +8,7 @@ export async function DELETE(request: Request) {
   const db = await connectDb();
 
   // Aufgabe löschen
-  await db.delete(tasks).where(tasks.task_id.equals(task_id)).execute();
+  await db.delete(tasks).where(eq(tasks.task_id, task_id)).execute();
   console.log("Task deleted");
 
   return new Response("Task deleted successfully", { status: 200 });
