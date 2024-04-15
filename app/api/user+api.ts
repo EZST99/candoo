@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
-import connectDb from "../../common/db/connection";
+import db from "../../common/db/connection";
 import { users } from "../../common/db/schema";
 
 export async function GET(request: Request) {
-  const db = await connectDb();
   const sessionId = request.headers
     .get("Authorization")
     ?.replace("Bearer ", "");
