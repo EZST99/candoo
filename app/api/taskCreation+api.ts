@@ -25,4 +25,8 @@ export async function POST(request: Request) {
   });
   console.log("Task created");
 
+  return new Response(JSON.stringify({ success: true }), {
+    headers: { "Content-Type": "application/json" },
+  });
+
 }
