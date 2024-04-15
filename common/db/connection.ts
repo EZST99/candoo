@@ -1,18 +1,13 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
+import mysql from "mysql2";
 
-let db: ReturnType<typeof drizzle> | null = null;
-async function connectDb() {
-  if (db) return db;
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_NAME,
+  password: "",
+});
 
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    password: "",
-  });
-  db = drizzle(connection);
-  return drizzle(connection);
-}
+const db = drizzle(connection);
 
-export default connectDb;
+export default db;
