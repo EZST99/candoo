@@ -7,18 +7,20 @@ import Input from "../../common/components/Input";
 //import DatePicker from 'react-native-date-picker';
 // npm install @react-native-community/datetimepicker --save
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {TaskCreationRequest} from "../api/taskCreation+api";
 
 interface Props {
     back: () => void;
   }
 
-function taskCreation({ back }: Props) {
+function TaskCreation({ back }: Props) {
     const [taskname, setTaskname] = useState("");
+    const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
-    const [dueDate, setDueDate] = useState(new Date());
+    const [due_date, setDue_date] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [importance, setImportance] = useState("");
-    const [urgency, setUrgency] = useState("");
+    const [importance, setImportance] = useState(0);
+    const [urgency, setUrgency] = useState(0);
 
     const toggleDatepicker = () => {
         setShow(!show);
@@ -34,12 +36,21 @@ function taskCreation({ back }: Props) {
     // }
   
     async function handleTaskCreation() {
+        const body: TaskCreationRequest = {
+            taskname,
+            category,
+            description,
+            due_date,
+            importance,
+            urgency,
+            };
+
       fetch("/api/taskCreation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ taskname, description, dueDate, importance, urgency }),
+        body: JSON.stringify(body),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -99,13 +110,13 @@ function taskCreation({ back }: Props) {
               }}
             /> */}
             <Input
-              value={importance}
-              onChangeText={setImportance}
+              value={importance.toString()}
+              onChangeText={(text) => setImportance(parseInt(text, 10))}
               placeholder="Pick Importance"
             />
             <Input
-              value={urgency}
-              onChangeText={setUrgency}
+              value={urgency.toString()}
+              onChangeText={(text) => setUrgency(parseInt(text, 10))}
               placeholder="Pick Urgency"
             />
           </View>
@@ -150,4 +161,4 @@ function taskCreation({ back }: Props) {
     },
   });
 
-export default taskCreation;
+export default TaskCreation;
