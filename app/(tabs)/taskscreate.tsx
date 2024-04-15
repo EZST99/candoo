@@ -19,8 +19,8 @@ function TaskCreation({ back }: Props) {
     const [description, setDescription] = useState("");
     const [due_date, setDue_date] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [importance, setImportance] = useState(0);
-    const [urgency, setUrgency] = useState(0);
+    const [importance, setImportance] = useState("");
+    const [urgency, setUrgency] = useState("");
 
     const toggleDatepicker = () => {
         setShow(!show);
@@ -41,9 +41,9 @@ function TaskCreation({ back }: Props) {
             category,
             description,
             due_date,
-            importance,
-            urgency,
-            };
+            importance: Number(importance),
+            urgency: Number(importance),
+        };
 
       fetch("/api/taskCreation", {
         method: "POST",
@@ -110,13 +110,15 @@ function TaskCreation({ back }: Props) {
               }}
             /> */}
             <Input
-              value={importance.toString()}
-              onChangeText={(text) => setImportance(parseInt(text, 10))}
+            keyboardType="numeric"
+              value={importance}
+              onChangeText={setImportance}
               placeholder="Pick Importance"
             />
             <Input
-              value={urgency.toString()}
-              onChangeText={(text) => setUrgency(parseInt(text, 10))}
+            keyboardType="numeric"
+              value={urgency}
+              onChangeText={setUrgency}
               placeholder="Pick Urgency"
             />
           </View>
