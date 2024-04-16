@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Alert } from "react-native";
 import Button from "../../common/components/Button";
 import Input from "../../common/components/Input";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { TaskCreationRequest } from "../api/taskCreation+api";
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import TouchableOpacity from "../../common/components/TouchableOpacity";
 
 interface Props {
   back: () => void;
@@ -22,6 +23,14 @@ function TaskCreation({ back }: Props) {
   const toggleDatepicker = () => {
     setShow(!show);
   };
+
+  const setDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const currentDate = selectedDate || due_date;
+    setShow(false); // Close the DateTimePicker after selecting a date
+    setDue_date(currentDate);
+  };
+  
+  
 
   const validateInput = () => {
     if (!taskname || !category || !description) {
@@ -97,7 +106,7 @@ function TaskCreation({ back }: Props) {
             onChangeText={setDescription}
             placeholder="Description"
           />
-          <Button title="Due Date" onPress={toggleDatepicker} />
+          {/* <Button title="Due Date" onPress={toggleDatepicker} />
           {show && (
             <DateTimePicker
               mode="date"
@@ -108,7 +117,18 @@ function TaskCreation({ back }: Props) {
                 setShow(false);
               }}
             />
-          )}
+          )} */}
+          
+          {show ? <DateTimePicker mode="date" value={due_date} onChange={setDate} /> : null}
+
+          <TouchableOpacity onPress={() => setShow(true)}>
+              <View>
+                <Text>
+                  {due_date.toDateString()}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
           <Input
             keyboardType="numeric"
             value={importance}
