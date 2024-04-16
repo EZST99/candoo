@@ -1,10 +1,18 @@
-import connectDb from "../../common/db/connection";
+import db from "../../common/db/connection";
 import { tasks } from "../../common/db/schema";
+
+export interface TaskCreationRequest {
+  taskname: string;
+  category: string;
+  due_date: Date;
+  description: string;
+  importance: number;
+  urgency: number;
+}
 
 export async function POST(request: Request) {
   console.log("Task creation");
-  const body = await request.json();
-  const db = await connectDb();
+  const body = await request.json() as TaskCreationRequest;
 
   console.log("Task creation");
   await db.insert(tasks).values({
@@ -16,5 +24,9 @@ export async function POST(request: Request) {
     urgency: body.urgency,
   });
   console.log("Task created");
+
+  return new Response(JSON.stringify({ success: true }), {
+    headers: { "Content-Type": "application/json" },
+  });
 
 }
