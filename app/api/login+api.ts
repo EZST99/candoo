@@ -1,10 +1,9 @@
 import crypto from "crypto";
 import { eq } from "drizzle-orm";
-import connectDb from "../../common/db/connection";
+import db from "../../common/db/connection";
 import { users } from "../../common/db/schema";
 
 export async function POST(request: Request) {
-  const db = await connectDb();
   const body = await request.json();
 
   const res = await db

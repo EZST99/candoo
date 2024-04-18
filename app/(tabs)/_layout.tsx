@@ -17,6 +17,12 @@ export default function TabsLayout() {
           title: "Profile",
         }}
       />
+      <Tabs.Screen
+        name="taskscreate"
+        options={{
+          title: "Create Task",
+        }}
+      />
     </Tabs>
   );
 }
