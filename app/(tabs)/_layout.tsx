@@ -8,8 +8,12 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "white",
-        tabBarActiveBackgroundColor: "#ff0000b8",
-        tabBarInactiveBackgroundColor: "#ff0000b8",
+        tabBarStyle: {
+          height: 90,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          backgroundColor: "rgba(255, 0, 0, 0.72)",
+        }
       }}
     >
       <Tabs.Screen
@@ -22,11 +26,29 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="categories"
+        options={{
+          title: "Categories",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="list-ol" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="taskscreate"
         options={{
           title: "Create Task",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="plus" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tasks"
+        options={{
+          title: "View Tasks",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="list" size={24} color={color} />
           ),
         }}
       />
