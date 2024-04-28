@@ -19,6 +19,7 @@ interface Task {
 
 export default function Tasks() {
     const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
+    const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
     const router = useRouter()
 
   useEffect(() => {

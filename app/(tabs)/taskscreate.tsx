@@ -1,6 +1,6 @@
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback, ScrollView } from "react-native";
 import Button from "../../common/components/Button";
 import TaskInput from "../../common/components/TaskInput";
 import Input from "../../common/components/Input";
@@ -116,7 +116,7 @@ function TaskCreation({ back }: Props) {
           </View>
           <Text style={styles.title}>Create Task</Text>
         </View>
-        <View style={styles.form}>
+        <ScrollView style={styles.form}>
           <TaskInput
             value={taskname}
             onChangeText={setTaskname}
@@ -176,9 +176,9 @@ function TaskCreation({ back }: Props) {
                 }
               </View>
             </TouchableWithoutFeedback>}
+            </ScrollView>
 
         </View>
-      </View>
 
       <View style={styles.btn}>
         <ButtonCircle onPress={handleTaskCreation}>
