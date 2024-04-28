@@ -1,23 +1,14 @@
-import { useFonts } from "expo-font";
+import { Inter_900Black, useFonts } from "@expo-google-fonts/inter";
 import { Stack } from "expo-router";
-import { Text, View } from "react-native";
 import AuthProvider from "../common/AuthProvider";
 
 function AppLayout() {
-  const [fontsLoaded, fontError] = useFonts({
-    Inter: require("../assets/Inter.ttf"),
+  const [fontsLoaded] = useFonts({
+    Inter: Inter_900Black,
   });
 
-  if (!fontsLoaded && !fontError) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
   return (
-    <AuthProvider>
+    <AuthProvider fontsLoaded={fontsLoaded}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
