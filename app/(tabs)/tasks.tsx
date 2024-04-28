@@ -3,7 +3,6 @@ import { Text, View, StyleSheet } from "react-native";
 import CheckBox from "expo-checkbox";
 import { tasks } from "../../common/db/schema";
 import { check } from "drizzle-orm/pg-core";
-import TouchableOpacity from "../../common/components/TouchableOpacity";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/PlusButton";
