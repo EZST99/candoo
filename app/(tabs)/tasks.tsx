@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   itemLeft: {
     flexDirection: "row",
@@ -136,9 +136,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: "absolute",
-    bottom: 0,
+    bottom: 24,
     width: "100%",
-    padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
