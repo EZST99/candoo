@@ -69,16 +69,19 @@ export default function Tasks() {
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
           {tasks.map((task) => (
+            <Pressable key={task.task_id} onPress={() => router.push(`/task-detail/${task.task_id}`)}>
             <View key={task.task_id} style={styles.item}>
               <View style={styles.itemLeft}>
                 <View style={styles.square}></View>
-                <Text>{task.taskname}</Text>
+                
+                    <Text>{task.taskname}</Text>
               </View>
               <CheckBox
                 value={selectedTasks.includes(task.task_id)}
                 onValueChange={() => handleTaskSelection(task.task_id)}
               />
-            </View>
+            </View> 
+            </Pressable>
           ))}
         </ScrollView>
         {/* "+"-Button am unteren Rand */}
