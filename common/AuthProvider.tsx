@@ -36,7 +36,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     })
       .then((response) => response.json())
-      .then((data) => setUser(data))
+      .then((data) => data && setUser(data))
       .catch((error) => {
         console.error(error);
       });
