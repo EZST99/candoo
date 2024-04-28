@@ -1,4 +1,5 @@
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Welcome from "./Welcome";
 
@@ -16,17 +17,24 @@ const AuthContext = createContext<AuthProviderData>({
   setSessionId: () => console.log("not initialized"),
 });
 export const useUser = () => useContext(AuthContext);
+SplashScreen.preventAutoHideAsync();
 
-function AuthProvider({ children }: { children: React.ReactNode }) {
+interface Props {
+  children: React.ReactNode;
+  fontsLoaded: boolean;
+}
+
+function AuthProvider({ children, fontsLoaded }: Props) {
   const [sessionId, setSessionId] = useState<null | string>(
     SecureStore.getItem("sessionId")
   );
   const [user, setUser] = useState<User | null>(null);
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
-    console.log("sessionId", sessionId);
     if (sessionId == null) {
       setUser(null);
+      setAppIsReady(true);
       return;
     }
 
@@ -39,8 +47,16 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((data) => data && setUser(data))
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setAppIsReady(true);
       });
   }, [sessionId]);
+
+  useEffect(() => {
+    if (!appIsReady || !fontsLoaded) return;
+    SplashScreen.hideAsync();
+  }, [fontsLoaded, appIsReady]);
 
   return (
     <AuthContext.Provider value={{ user, setSessionId }}>
