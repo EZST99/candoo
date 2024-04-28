@@ -1,5 +1,7 @@
+import { useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native'; // Import the View component
+import { Pressable, Text, View } from 'react-native'; // Import the View component
+import { Link } from 'expo-router';
 
 interface Task {
     task_id: number;
@@ -8,6 +10,7 @@ interface Task {
 
 export default function Tasks() {
     const [tasks, setTasks] = useState<Task[]>([]); // Define the type for tasks array
+    const router = useRouter()
 
     useEffect(() => {
         getTasks();
@@ -30,10 +33,13 @@ export default function Tasks() {
 
     return (
         <View>
+            <Link href="/task-detail">Details</Link>
+            <Pressable onPress={() => router.push("/task-detail")}>
             {/* Hier renderst du die gefetchten Elemente */}
             {tasks.map(task => (
                     <Text>{task.taskname}</Text>
             ))}
+            </Pressable>
         </View>
     );
 }
