@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import CheckBox from "expo-checkbox";
 import { tasks } from "../../common/db/schema";
 import { check } from "drizzle-orm/pg-core";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/PlusButton";
-import { router} from "expo-router";
+import { router } from "expo-router";
 
 interface Task {
   task_id: number;
@@ -47,44 +47,46 @@ export default function Tasks() {
 
   return (
     <>
-    <View style={styles.container}>
-      <LinearGradient
-        // Background Linear Gradient
-        colors={["rgba(255, 0, 0, 0.72)", "white"]}
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          height: "110%",
-        }}
-      />
-      {/* Today's Tasks */}
-      <Text style={styles.sectionTitle}>Tasks</Text>
+      <View style={styles.container}>
+        <LinearGradient
+          // Background Linear Gradient
+          colors={["rgba(255, 0, 0, 0.72)", "white"]}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            height: "110%",
+          }}
+        />
+        {/* Today's Tasks */}
+        <Text style={styles.sectionTitle}>Tasks</Text>
 
-      {/* Rendern der gefetchten Elemente */}
-      {tasks.map((task) => (
-        <View key={task.task_id} style={styles.item}>
-          <View style={styles.itemLeft}>
-            <View style={styles.square}></View>
-            <Text>{task.taskname}</Text>
-          </View>
-          <CheckBox
-            value={selectedTasks.includes(task.task_id)}
-            onValueChange={() => handleTaskSelection(task.task_id)}
-          />
-        </View>
-      ))}
-      {/* "+"-Button am unteren Rand */}
-    </View>
-      <View style={styles.addButton}>  
-      <ButtonCircle onPress={() => router.push('taskscreate')}>
-        <View>
-      <AntDesign name="plus" size={24} color="white" />
-        </View>
-      </ButtonCircle>
+        {/* Rendern der gefetchten Elemente */}
+        <ScrollView>
+          {tasks.map((task) => (
+            <View key={task.task_id} style={styles.item}>
+              <View style={styles.itemLeft}>
+                <View style={styles.square}></View>
+                <Text>{task.taskname}</Text>
+              </View>
+              <CheckBox
+                value={selectedTasks.includes(task.task_id)}
+                onValueChange={() => handleTaskSelection(task.task_id)}
+              />
+            </View>
+          ))}
+        </ScrollView>
+        {/* "+"-Button am unteren Rand */}
       </View>
-      </>
+      <View style={styles.addButton}>
+        <ButtonCircle onPress={() => router.push('taskscreate')}>
+          <View>
+            <AntDesign name="plus" size={24} color="white" />
+          </View>
+        </ButtonCircle>
+      </View>
+    </>
   );
 }
 
@@ -101,7 +103,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+
+    fontFamily: "Inter",
+    fontWeight: "700",
     color: "#fff",
     alignSelf: "center",
     marginBottom: 20,
