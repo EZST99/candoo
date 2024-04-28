@@ -44,6 +44,16 @@ function TaskCreation({ back }: Props) {
     return true;
   };
 
+  const resetForm = () => {
+    setTaskname("");
+    setCategory("");
+    setDescription("");
+    setDue_date(new Date());
+    setImportance("");
+    setUrgency("");
+    return;
+  }
+
   async function handleTaskCreation() {
     if (!validateInput()) {
       return;
@@ -69,6 +79,7 @@ function TaskCreation({ back }: Props) {
     .then((data) => {
       console.log("Task Creation successful:", data);
       Alert.alert("Success", "Task successfully created.");
+      resetForm();
     })
     .catch((error) => {
       console.error("Task creation failed:", error);
