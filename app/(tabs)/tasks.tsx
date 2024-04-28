@@ -7,7 +7,7 @@ import TouchableOpacity from "../../common/components/TouchableOpacity";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/PlusButton";
-import { router, useRouter } from "expo-router";
+import { router} from "expo-router";
 
 interface Task {
   task_id: number;
