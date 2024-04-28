@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacityProps, TouchableOpacity as TouchableReact } from "react-native";
 
-function TouchableOpacity(props: TouchableOpacityProps) {
+function ButtonCircle(props: TouchableOpacityProps) {
   return <TouchableReact {...props} style={styles.base} />;
 }
 
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TouchableOpacity;
+export default ButtonCircle;

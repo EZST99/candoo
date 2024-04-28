@@ -7,13 +7,9 @@ function Input(props: TextInputProps) {
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: "#fff",
-    borderWidth: 3,
-    borderColor: "rgba(0, 0, 0, 0.19)",
+    backgroundColor: "#ff00003b",
     padding: 10,
-    margin: 10,
-    borderRadius: 20,
-    textAlign: "center",
+    borderRadius: 10,
   },
 });
 

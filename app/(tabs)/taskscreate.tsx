@@ -1,11 +1,12 @@
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback } from "react-native";
 import Button from "../../common/components/Button";
+import TaskInput from "../../common/components/TaskInput";
 import Input from "../../common/components/Input";
 import { TaskCreationRequest } from "../api/taskCreation+api";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import TouchableOpacity from "../../common/components/TouchableOpacity";
+import ButtonCircle from "../../common/components/ButtonCircle";
 import { LinearGradient } from 'expo-linear-gradient'; // npx expo install expo-linear-gradient
 
 interface Props {
@@ -16,7 +17,7 @@ function TaskCreation({ back }: Props) {
   const [taskname, setTaskname] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [due_date, setDue_date] = useState(new Date());
+  const [due_date, setDue_date] = useState<Date | null>(null);
   const [show, setShow] = useState(false);
   const [importance, setImportance] = useState("");
   const [urgency, setUrgency] = useState("");
@@ -64,7 +65,7 @@ function TaskCreation({ back }: Props) {
       taskname,
       category,
       description,
-      due_date,
+      due_date: due_date || new Date(), // Assign a default value of new Date() if due_date is null
       importance: Number(importance),
       urgency: Number(urgency),
     };
@@ -116,55 +117,73 @@ function TaskCreation({ back }: Props) {
           <Text style={styles.title}>Create Task</Text>
         </View>
         <View style={styles.form}>
-          <Input
+          <TaskInput
             value={taskname}
             onChangeText={setTaskname}
             placeholder="Task Name"
           />
-          <Input
+          <TaskInput
             value={category}
             onChangeText={setCategory}
             placeholder="Category"
           />
-          <Input
+          <TaskInput
             value={description}
             onChangeText={setDescription}
             placeholder="Description"
           />
-
-          <Input
+          <TaskInput
             keyboardType="number-pad"
             value={importance}
             onChangeText={setImportance}
             placeholder="Pick Importance"
           />
-          <Input
+          <TaskInput
             keyboardType="number-pad"
             value={urgency}
             onChangeText={setUrgency}
             placeholder="Pick Urgency"
           />
 
-          <View style={{
-            backgroundColor: "#fff",
-            borderWidth: 3,
-            borderColor: "rgba(0, 0, 0, 0.19)",
-            margin: 10,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <DateTimePicker mode="date" value={due_date} onChange={setDate} />
-          </View>
+          {show ?
+            <View style={{
+              backgroundColor: "#fff",
+              borderWidth: 3,
+              borderColor: "rgba(0, 0, 0, 0.19)",
+              margin: 10,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <DateTimePicker mode="date" value={due_date ?? new Date()} onChange={setDate} />
+            </View>
+            :
+            <TouchableWithoutFeedback onPress={() => setShow(true)} style={{ padding: 10 }}>
+              <View style={{
+                backgroundColor: "#fff",
+                borderWidth: 3,
+                borderColor: "rgba(0, 0, 0, 0.19)",
+                margin: 10,
+                borderRadius: 20,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+              }}>
+                <Text>
+                  {due_date == null ? "Pick Due Date" : due_date.toDateString()}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>}
+
         </View>
       </View>
 
       <View style={styles.btn}>
-        <TouchableOpacity onPress={handleTaskCreation}>
+        <ButtonCircle onPress={handleTaskCreation}>
           <View>
             <Feather name="check" size={24} color="white" />
           </View>
-        </TouchableOpacity>
+        </ButtonCircle>
       </View>
     </>
   );
