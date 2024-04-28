@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacityProps, TouchableOpacity as TouchableReact  } from "react-native";
+import { StyleSheet, TouchableOpacityProps, TouchableOpacity as TouchableReact } from "react-native";
 
 function TouchableOpacity(props: TouchableOpacityProps) {
   return <TouchableReact {...props} style={styles.base} />;
@@ -7,9 +7,13 @@ function TouchableOpacity(props: TouchableOpacityProps) {
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: "#ff00003b",
+    backgroundColor: "rgba(255, 0, 0, 0.72)",
     padding: 10,
-    borderRadius: 10,
+    height: 60,
+    width: 60,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
