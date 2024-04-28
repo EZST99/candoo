@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { Pressable, Text, View, StyleSheet, ScrollView } from "react-native";
 import CheckBox from "expo-checkbox";
 import { tasks } from "../../common/db/schema";
 import { check } from "drizzle-orm/pg-core";
@@ -8,14 +9,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/PlusButton";
 import { router } from "expo-router";
 
+
+
+
 interface Task {
   task_id: number;
   taskname: string;
 }
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedTasks, setSelectedTasks] = useState<number[]>([]); // Zustand für die ausgewählten Tasks
+    const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
+    const router = useRouter()
 
   useEffect(() => {
     getTasks();
