@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'expo-router';
-import { Pressable, Text, View, StyleSheet, ScrollView } from "react-native";
-import CheckBox from "expo-checkbox";
-import { tasks } from "../../common/db/schema";
-import { check } from "drizzle-orm/pg-core";
 import { AntDesign } from "@expo/vector-icons";
+import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import ButtonCircle from "../../common/components/PlusButton";
-import { router } from "expo-router";
-
-
-
 
 interface Task {
   task_id: number;
@@ -18,9 +12,9 @@ interface Task {
 }
 
 export default function Tasks() {
-    const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
-    const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
-    const router = useRouter()
+  const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
+  const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     getTasks();
@@ -70,25 +64,28 @@ export default function Tasks() {
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
           {tasks.map((task) => (
-            <Pressable key={task.task_id} onPress={() => router.push(`/task-detail/${task.task_id}`)}>
-            <View key={task.task_id} style={styles.item}>
-              <View style={styles.itemLeft}>
-                <View style={styles.square}></View>
-                
-                    <Text>{task.taskname}</Text>
+            <Pressable
+              key={task.task_id}
+              onPress={() => router.push(`/task-detail/${task.task_id}`)}
+            >
+              <View key={task.task_id} style={styles.item}>
+                <View style={styles.itemLeft}>
+                  <View style={styles.square}></View>
+
+                  <Text>{task.taskname}</Text>
+                </View>
+                <CheckBox
+                  value={selectedTasks.includes(task.task_id)}
+                  onValueChange={() => handleTaskSelection(task.task_id)}
+                />
               </View>
-              <CheckBox
-                value={selectedTasks.includes(task.task_id)}
-                onValueChange={() => handleTaskSelection(task.task_id)}
-              />
-            </View> 
             </Pressable>
           ))}
         </ScrollView>
         {/* "+"-Button am unteren Rand */}
       </View>
       <View style={styles.addButton}>
-        <ButtonCircle onPress={() => router.push('taskscreate')}>
+        <ButtonCircle onPress={() => router.push("taskscreate")}>
           <View>
             <AntDesign name="plus" size={24} color="white" />
           </View>
