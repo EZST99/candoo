@@ -35,7 +35,7 @@ function TaskCreation({ back }: Props) {
 
 
   const validateInput = () => {
-    if (!taskname || !category || !description) {
+    if (!taskname || !category || !importance || !urgency || !due_date) {
       Alert.alert("Validation Error", "All fields must be filled.");
       return false;
     }
@@ -50,7 +50,7 @@ function TaskCreation({ back }: Props) {
     setTaskname("");
     setCategory("");
     setDescription("");
-    setDue_date(new Date());
+    setDue_date(null);
     setImportance("");
     setUrgency("");
     return;
@@ -169,9 +169,11 @@ function TaskCreation({ back }: Props) {
                 justifyContent: 'center',
                 paddingVertical: 10,
               }}>
-                <Text>
-                  {due_date == null ? "Pick Due Date" : due_date.toDateString()}
-                </Text>
+                {due_date == null ?
+                  <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>Pick Due Date</Text>
+                  :
+                  <Text>{due_date.toDateString()}</Text>
+                }
               </View>
             </TouchableWithoutFeedback>}
 
