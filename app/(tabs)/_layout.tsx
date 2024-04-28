@@ -39,6 +39,15 @@ export default function TabsLayout() {
           ),
         }}
       />
+       <Tabs.Screen
+        name="tasks"
+        options={{
+          title: "View Tasks",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="plus" size={24} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
