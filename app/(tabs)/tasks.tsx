@@ -1,7 +1,7 @@
+// Importiere useRouter aus 'expo-router'
 import { useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { Pressable, Text, View } from 'react-native'; // Import the View component
-import { Link } from 'expo-router';
+import { Pressable, Text, View } from 'react-native'; // Importiere die View-Komponente
 
 interface Task {
     task_id: number;
@@ -9,7 +9,7 @@ interface Task {
 }
 
 export default function Tasks() {
-    const [tasks, setTasks] = useState<Task[]>([]); // Define the type for tasks array
+    const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
     const router = useRouter()
 
     useEffect(() => {
@@ -33,13 +33,11 @@ export default function Tasks() {
 
     return (
         <View>
-            <Link href="/task-detail">Details</Link>
-            <Pressable onPress={() => router.push("/task-detail")}>
-            {/* Hier renderst du die gefetchten Elemente */}
             {tasks.map(task => (
+                <Pressable key={task.task_id} onPress={() => router.push(`/task-detail/${task.task_id}`)}>
                     <Text>{task.taskname}</Text>
+                </Pressable>
             ))}
-            </Pressable>
         </View>
     );
 }
