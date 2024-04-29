@@ -1,8 +1,8 @@
 import { AntDesign } from "@expo/vector-icons";
 import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import ButtonCircle from "../../common/components/PlusButton";
 
@@ -16,9 +16,11 @@ export default function Tasks() {
   const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    getTasks();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getTasks();
+    }, [])
+  );
 
   async function getTasks() {
     try {
