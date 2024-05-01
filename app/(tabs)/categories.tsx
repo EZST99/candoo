@@ -18,8 +18,8 @@ import CategoryItem from "../../common/components/categoryItem";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 
 interface Category {
   text: string;
@@ -28,10 +28,16 @@ interface Category {
 }
 
 export default function category() {
-  const [categories, setCategories] = useState<Category[]>([]); // Definiere den Typ für das tasks-Array
+  const [categories, setCategories] = useState<Category[]>([]); // Definiere den Typ für das category-Array
   const router = useRouter();
 
-  async function getTasks() {
+  useFocusEffect(
+    useCallback(() => {
+      getCategory();
+    }, [])
+  );
+
+  async function getCategory() {
     try {
       const response = await fetch("/api/categoryView", {
         method: "GET",
