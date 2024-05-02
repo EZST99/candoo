@@ -1,12 +1,3 @@
-/* //TODO:
-# create category table (user_id, name, color)
-# categoryView, categoryCreate api
-- categoryDelete api
-# create create category page
-# category_id as FK in tasks table
-- route to tasks with category_id when clicking on category (for example: select * from tasks where category_id = ...) (for example in categoryItem.tsx component: onPress={() => router.push(`/tasks/${props.category_id}`)})
-- when creating task, select category from dropdown menu (select * from category where user_id = ...)
-*/
 import {
   Pressable,
   View,

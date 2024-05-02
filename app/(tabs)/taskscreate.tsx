@@ -7,7 +7,7 @@ import Input from "../../common/components/Input";
 import { TaskCreationRequest } from "../api/taskCreation+api";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import ButtonCircle from "../../common/components/ButtonCircle";
-import { LinearGradient } from 'expo-linear-gradient'; // npx expo install expo-linear-gradient
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface Props {
   back: () => void;
@@ -15,9 +15,8 @@ interface Props {
 
 function TaskCreation({ back }: Props) {
 
-  const [user_id, setUser_id] = useState(0);
-  const [category_id, setCategory_id] = useState(0);
-  const [category, setCategory] = useState("");
+  const [user_id, setUser_id] = useState(1);
+  const [category_id, setCategory_id] = useState(2);
   const [taskname, setTaskname] = useState("");
   const [description, setDescription] = useState("");
   const [due_date, setDue_date] = useState<Date | null>(null);
@@ -38,7 +37,7 @@ function TaskCreation({ back }: Props) {
 
 
   const validateInput = () => {
-    if (!taskname || !category_id || !importance || !urgency || !due_date) {
+    if (!taskname || !importance || !urgency || !due_date) {
       Alert.alert("Validation Error", "All fields must be filled.");
       return false;
     }
@@ -50,8 +49,9 @@ function TaskCreation({ back }: Props) {
   };
 
   const resetForm = () => {
+    setUser_id(1);
+    setCategory_id(2);
     setTaskname("");
-    setCategory_id(0);
     setDescription("");
     setDue_date(null);
     setImportance("");
@@ -126,11 +126,11 @@ function TaskCreation({ back }: Props) {
             onChangeText={setTaskname}
             placeholder="Task Name"
           />
-          <TaskInput
+          {/* <TaskInput
             value={category}
             onChangeText={setCategory}
             placeholder="Category"
-          />
+          /> */}
           <TaskInput
             value={description}
             onChangeText={setDescription}
