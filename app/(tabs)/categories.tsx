@@ -1,8 +1,9 @@
 /* //TODO:
-- create category table (user_id, name, color)
-- categoryView, categoryCreate, categoryDelete api
-- create category page
-- category_id as FK in tasks table
+# create category table (user_id, name, color)
+# categoryView, categoryCreate api
+- categoryDelete api
+# create create category page
+# category_id as FK in tasks table
 - route to tasks with category_id when clicking on category (for example: select * from tasks where category_id = ...) (for example in categoryItem.tsx component: onPress={() => router.push(`/tasks/${props.category_id}`)})
 - when creating task, select category from dropdown menu (select * from category where user_id = ...)
 */
@@ -22,7 +23,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
 interface Category {
-  text: string;
+  categoryname: string;
   color: string;
   category_id: string;
 }
@@ -71,20 +72,16 @@ export default function category() {
         <ScrollView>
           {categories.map((category) => (
             <CategoryItem
-              text={category.text}
+              categoryname={category.categoryname}
               color={category.color}
               category_id={category.category_id}
             />
           ))}
-
-          {/*category item component test with hardcoded data*/}
-          <CategoryItem color={"red"} text={"University"} category_id={"1"} />
-          <CategoryItem color={"blue"} text={"Work"} category_id={"1"} />
         </ScrollView>
       </View>
       <View style={styles.addButton}>
         <ButtonCircle
-        //onPress={() => router.push("categorycreate")}
+          onPress={() => router.push("../category-create/categorycreate")}
         >
           <View>
             <AntDesign name="plus" size={24} color="white" />

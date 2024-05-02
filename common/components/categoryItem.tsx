@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 interface Props extends TouchableOpacityProps {
-  text: string;
+  categoryname: string;
   color: string;
   category_id: string;
 }
@@ -25,7 +25,7 @@ const CategoryItem = (props: Props) => {
           <View
             style={[styles.square, { backgroundColor: props.color }]}
           ></View>
-          <Text style={styles.categoryText}>{props.text}</Text>
+          <Text style={styles.categoryText}>{props.categoryname}</Text>
         </View>
       </View>
     </TouchableOpacity>
