@@ -14,8 +14,11 @@ interface Props {
 }
 
 function TaskCreation({ back }: Props) {
-  const [taskname, setTaskname] = useState("");
+
+  const [user_id, setUser_id] = useState(0);
+  const [category_id, setCategory_id] = useState(0);
   const [category, setCategory] = useState("");
+  const [taskname, setTaskname] = useState("");
   const [description, setDescription] = useState("");
   const [due_date, setDue_date] = useState<Date | null>(null);
   const [show, setShow] = useState(false);
@@ -35,7 +38,7 @@ function TaskCreation({ back }: Props) {
 
 
   const validateInput = () => {
-    if (!taskname || !category || !importance || !urgency || !due_date) {
+    if (!taskname || !category_id || !importance || !urgency || !due_date) {
       Alert.alert("Validation Error", "All fields must be filled.");
       return false;
     }
@@ -48,7 +51,7 @@ function TaskCreation({ back }: Props) {
 
   const resetForm = () => {
     setTaskname("");
-    setCategory("");
+    setCategory_id(0);
     setDescription("");
     setDue_date(null);
     setImportance("");
@@ -62,8 +65,9 @@ function TaskCreation({ back }: Props) {
     }
 
     const body: TaskCreationRequest = {
+      user_id,
+      category_id,
       taskname,
-      category,
       description,
       due_date: due_date || new Date(), // Assign a default value of new Date() if due_date is null
       importance: Number(importance),
@@ -176,9 +180,9 @@ function TaskCreation({ back }: Props) {
                 }
               </View>
             </TouchableWithoutFeedback>}
-            </ScrollView>
+        </ScrollView>
 
-        </View>
+      </View>
 
       <View style={styles.btn}>
         <ButtonCircle onPress={handleTaskCreation}>

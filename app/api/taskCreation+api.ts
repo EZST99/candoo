@@ -2,8 +2,9 @@ import db from "../../common/db/connection";
 import { tasks } from "../../common/db/schema";
 
 export interface TaskCreationRequest {
+  user_id: number;
+  category_id: number;
   taskname: string;
-  category: string;
   due_date: Date;
   description: string;
   importance: number;
@@ -16,8 +17,9 @@ export async function POST(request: Request) {
 
   console.log("Task creation");
   await db.insert(tasks).values({
+    user_id: body.user_id,
+    category_id: body.category_id,
     taskname: body.taskname,
-    category: body.category,
     due_date: body.due_date,
     description: body.description,
     importance: body.importance,
