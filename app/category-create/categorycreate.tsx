@@ -1,9 +1,11 @@
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
-import React, { useState } from "react";
-import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Pressable } from "react-native";
+import React, { useContext, useState } from "react";
+import {
+    StyleSheet, Text, View, Alert, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Pressable, TouchableOpacityProps
+} from "react-native";
 import TaskInput from "../../common/components/TaskInput";
 import ButtonCircle from "../../common/components/ButtonCircle";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import { CategoryCreationRequest } from "../api/categoryCreation+api";
 
 interface Props {
@@ -11,7 +13,6 @@ interface Props {
 }
 
 function CategoryCreation({ back }: Props) {
-
     const [categoryname, setCategoryname] = useState("");
     const [user_id, setUser_id] = useState(1);
     const [color, setColor] = useState("");
@@ -28,7 +29,7 @@ function CategoryCreation({ back }: Props) {
         setCategoryname("");
         setColor("");
         return;
-    }
+    };
 
     async function handleCategoryCreation() {
         if (!validateInput()) {
@@ -60,21 +61,31 @@ function CategoryCreation({ back }: Props) {
             });
     }
 
+    const ColorButton = ({ color }: { color: string }) => {
+        return (
+            <TouchableOpacity
+                style={[styles.colorPickerItem, { backgroundColor: color }]}
+                onPress={() => setColor(color)}
+            ></TouchableOpacity>
+        );
+    };
+
+    const colorsList = ["darkred", "firebrick", "crimson", "red", "orangered", "tomato", "indianred", "orange", "gold", "yellow", "greenyellow", "lightgreen", "green", "lightseagreen", "limegreen", "lightskyblue", "skyblue", "dodgerblue", "royalblue", "blue", "darkblue", "purple", "darkmagenta", "magenta", "hotpink", "pink", "lightpink", "white", "black", "gray",
+    ];
+
     return (
         <>
             <View style={styles.container}>
                 <LinearGradient
                     // Background Linear Gradient
-                    colors={['rgba(255, 0, 0, 0.72)', 'white']}
-                    style={
-                        {
-                            position: 'absolute',
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            height: '110%',
-                        }
-                    }
+                    colors={["rgba(255, 0, 0, 0.72)", "white"]}
+                    style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        height: "110%",
+                    }}
                 />
                 <View style={styles.titleContainer}>
                     <View>
@@ -93,25 +104,29 @@ function CategoryCreation({ back }: Props) {
                         onChangeText={setCategoryname}
                         placeholder="Category Name"
                     />
-                    <TaskInput
-                        value={color}
-                        onChangeText={setColor}
-                        placeholder="Pick a color"
-                    />
-                    <View style={styles.colorPicker}>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "red" }]} onPress={() => setColor("red")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "blue" }]} onPress={() => setColor("blue")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "green" }]} onPress={() => setColor("green")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "gray" }]} onPress={() => setColor("gray")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "pink" }]} onPress={() => setColor("pink")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "lightblue" }]} onPress={() => setColor("lightblue")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "black" }]} onPress={() => setColor("black")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "yellow" }]} onPress={() => setColor("yellow")}></TouchableOpacity>
-                        <TouchableOpacity style={[styles.colorPickerItem, { backgroundColor: "purple" }]} onPress={() => setColor("purple")}></TouchableOpacity>
+
+                    <View style={{
+                        backgroundColor: "#fff",
+                        borderWidth: 3,
+                        borderColor: "rgba(0, 0, 0, 0.19)",
+                        margin: 10,
+                        borderRadius: 20,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 10,
+                    }}>
+                        {color != "" ?
+                            <Text>{color}</Text>
+                            :
+                            <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>Pick a color</Text>
+                        }
                     </View>
-
+                    <View style={styles.colorPicker}>
+                        {colorsList.map((color) => (
+                            <ColorButton key={color} color={color} />
+                        ))}
+                    </View>
                 </View>
-
             </View>
 
             <View style={styles.btn}>
@@ -166,14 +181,22 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "row", // align items in a row
         flexWrap: "wrap", // prevent items from wrapping onto a new line
-
+        justifyContent: "center", // align items in the center
     },
     colorPickerItem: {
-        width: 25,
-        height: 25,
-        borderRadius: 25,
+        width: 30,
+        height: 30,
+        borderRadius: 30,
         margin: 5,
-    }
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
 });
 
 export default CategoryCreation;
