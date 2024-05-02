@@ -13,11 +13,18 @@ export const users = mysqlTable("users", {
 
 export const tasks = mysqlTable("tasks", {
   task_id: int("task_id").primaryKey().autoincrement(),
-  user_id: int("user_id").references(() => users.user_id),
+  user_id: int("user_id").references(() => users.user_id).notNull(),
+  category_id: int("category_id").references(() => categories.category_id).notNull(),
   taskname: varchar("taskname", { length: 256 }).notNull(),
-  category: varchar("category", { length: 256 }).notNull(),
-  due_date: date("due_date"),
+  due_date: date("due_date").notNull(),
   description: varchar("description", { length: 256 }).default(""),
-  importance: int("importance").default(3),
-  urgency: int("urgency").default(3),
+  importance: int("importance").default(3).notNull(),
+  urgency: int("urgency").default(3).notNull(),
+});
+
+export const categories = mysqlTable("categories", {
+  category_id: int("category_id").primaryKey().autoincrement(),
+  user_id: int("user_id").references(() => users.user_id).notNull(),
+  categoryname: varchar("categoryname", { length: 256 }).notNull(),
+  color: varchar("color", { length: 256 }).notNull(),
 });
