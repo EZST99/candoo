@@ -1,7 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import ButtonCircle from "../../common/components/PlusButton";
@@ -15,16 +15,23 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
   const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
   const router = useRouter();
+  const { category_id } = useLocalSearchParams<{ category_id: string }>();
 
   useFocusEffect(
     useCallback(() => {
+      console.log("current category id:" + category_id);
       getTasks();
     }, [])
   );
 
   async function getTasks() {
     try {
-      const response = await fetch("/api/taskView", {
+      let url = '/api/taskView';
+      if (category_id) {
+        url = `/api/taskViewByCategory?category_id=${category_id}`;
+      }
+
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

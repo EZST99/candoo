@@ -18,7 +18,7 @@ const CategoryItem = (props: Props) => {
   return (
     <TouchableOpacity
       key={props.category_id}
-      onPress={() => router.push(`/tasks-by-category/${props.category_id}`)} //--> route to tasks with the category id passed (select * from tasks where category_id = ...)
+      onPress={() => router.push(`/tasks?category_id=${props.category_id}`)} //--> route to tasks with the category id passed (select * from tasks where category_id = ...)
     >
       <View style={styles.item}>
         <View style={styles.itemLeft}>
