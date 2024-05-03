@@ -62,7 +62,7 @@ export default function Tasks() {
           }}
         />
         {/* Today's Tasks */}
-        <Text style={styles.sectionTitle}>Tasks</Text>
+        <Text style={styles.sectionTitle}>{category_id}</Text>
 
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>

@@ -16,7 +16,7 @@ interface Props {
 function TaskCreation({ back }: Props) {
 
   const [user_id, setUser_id] = useState(1);
-  const [category_id, setCategory_id] = useState(2);
+  const [category_id, setCategory_id] = useState("");
   const [taskname, setTaskname] = useState("");
   const [description, setDescription] = useState("");
   const [due_date, setDue_date] = useState<Date | null>(null);
@@ -50,7 +50,7 @@ function TaskCreation({ back }: Props) {
 
   const resetForm = () => {
     setUser_id(1);
-    setCategory_id(2);
+    setCategory_id("");
     setTaskname("");
     setDescription("");
     setDue_date(null);
@@ -66,7 +66,7 @@ function TaskCreation({ back }: Props) {
 
     const body: TaskCreationRequest = {
       user_id,
-      category_id,
+      category_id: Number(category_id),
       taskname,
       description,
       due_date: due_date || new Date(), // Assign a default value of new Date() if due_date is null
@@ -126,11 +126,12 @@ function TaskCreation({ back }: Props) {
             onChangeText={setTaskname}
             placeholder="Task Name"
           />
-          {/* <TaskInput
-            value={category}
-            onChangeText={setCategory}
+          <TaskInput
+            keyboardType="number-pad"
+            value={category_id}
+            onChangeText={setCategory_id}
             placeholder="Category"
-          /> */}
+          />
           <TaskInput
             value={description}
             onChangeText={setDescription}
