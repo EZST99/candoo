@@ -11,24 +11,35 @@ interface Task {
   taskname: string;
 }
 
+interface Category {
+  category_id: number;
+  categoryname: string;
+  color: string;
+}
+
 export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
   const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
   const router = useRouter();
   const { category_id } = useLocalSearchParams<{ category_id: string }>();
+  const [category, setCategory] = useState<Category[] | undefined>([]);
 
   useFocusEffect(
     useCallback(() => {
       console.log("current category id:" + category_id);
       getTasks();
-    }, [])
+      getCategory();
+    }, [category_id])
   );
 
   async function getTasks() {
     try {
       let url = '/api/taskView';
-      if (category_id) {
-        url = `/api/taskViewByCategory?category_id=${category_id}`;
+      if (category_id !== undefined) {
+        console.log("category id exists, view from category");
+        url = `/api/taskView?category_id=${category_id}`;
+      } else {
+        console.log("category id does not exist, view all");
       }
 
       const response = await fetch(url, {
@@ -38,7 +49,35 @@ export default function Tasks() {
         },
       });
       const data = await response.json();
+      console.log("tasks from category: ");
+      console.log(data);
       setTasks(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getCategory() {
+    try {
+
+      if (category_id === undefined) {
+        console.log("category id does not exist, don't fetch category");
+        return;
+      }
+      console.log("category id exists");
+      let url = `/api/categoryDetails?category_id=${category_id}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log("category: ");
+      console.log(data);
+      console.log("categoryname: ");
+      console.log(data[0].categoryname);
+      setCategory(data);
     } catch (error) {
       console.error(error);
     }
@@ -68,7 +107,7 @@ export default function Tasks() {
           }}
         />
         {/* Today's Tasks */}
-        <Text style={styles.sectionTitle}>Tasks</Text>
+        <Text style={styles.sectionTitle}>{category_id ? category?.[0]?.categoryname + " \n" : "All "}Tasks</Text>
 
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
@@ -122,6 +161,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
     alignSelf: "center",
+    textAlign: "center",
     marginBottom: 20,
   },
   items: {

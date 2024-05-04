@@ -5,32 +5,45 @@ import { Alert, Text, View } from "react-native";
 import Button from "../../common/components/Button";
 
 const TaskDetailScreen = () => {
-  const [task, setTask] = useState({ taskname: "", category: "", due_date: "", importance: "", urgency: "", description: "" });
+  const [task, setTask] = useState({ taskname: "", category_id: "", due_date: "", importance: "", urgency: "", description: "" });
   const { taskId } = useLocalSearchParams<{ taskId: string }>();
+  const [category, setCategory] = useState("");
+
+  const fetchTask = async () => {
+    const response = await fetch(`/api/taskDetails?task_id=${taskId}`);
+    const taskData = await response.json();
+    console.log("Task data:");
+    console.log(taskData);
+    setTask({
+      taskname: taskData.taskname,
+      category_id: taskData.category_id,
+      due_date: new Date(taskData.due_date).toDateString(),
+      importance: taskData.importance,
+      urgency: taskData.urgency,
+      description: taskData.description,
+    });
+  };
+
+  const fetchCategoryname = async () => {
+    const response = await fetch(`/api/categoryDetails?category_id=${task.category_id}`);
+    const taskData = await response.json();
+    console.log("Category data:");
+    console.log(taskData);
+    setCategory(taskData[0].categoryname);
+  };
 
   useEffect(() => {
-    const fetchTask = async () => {
-      const response = await fetch(`/api/taskDetails?task_id=${taskId}`);
-      const taskData = await response.json();
-      console.log("Task data:");
-      console.log(taskData);
-      setTask({
-        taskname: taskData.taskname,
-        category: taskData.category,
-        due_date: new Date(taskData.due_date).toDateString(),
-        importance: taskData.importance,
-        urgency: taskData.urgency,
-        description: taskData.description,
-      });
-    };
-
     fetchTask();
   }, []);
+
+  useEffect(() => {
+    fetchCategoryname();
+  }, [task.category_id]);
 
   return (
     <View>
       <Text>Task Name: {task.taskname}</Text>
-      <Text>Category: {task.category}</Text>
+      <Text>Category: {category}</Text>
       <Text>Due Date: {task.due_date}</Text>
       <Text>Importance: {task.importance}</Text>
       <Text>Urgency: {task.urgency}</Text>

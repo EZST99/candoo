@@ -51,6 +51,15 @@ export default function TabsLayout() {
             <FontAwesome name="list" size={24} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Prevent the default action
+            e.preventDefault();
+
+            // Navigate to the Tasks page without a category_id
+            navigation.navigate('tasks');
+          },
+        })}
       />
       <Tabs.Screen
         name="profile"
