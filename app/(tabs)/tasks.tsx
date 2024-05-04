@@ -3,12 +3,14 @@ import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ButtonCircle from "../../common/components/PlusButton";
 
 interface Task {
   task_id: number;
   taskname: string;
+  category_id: number;
+  color: string;
 }
 
 interface Category {
@@ -48,9 +50,15 @@ export default function Tasks() {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.json();
+      let data = await response.json();
       console.log("tasks from category: ");
       console.log(data);
+      // Fetch the category color for each task
+      data = await Promise.all(data.map(async (task: Task) => {
+        let color = await getCategoryColor(task.category_id);
+        return { ...task, color };
+      }));
+
       setTasks(data);
     } catch (error) {
       console.error(error);
@@ -83,12 +91,54 @@ export default function Tasks() {
     }
   }
 
+  async function getCategoryColor(category_id: number) {
+    try {
+      const url = `/api/categoryDetails?category_id=${category_id}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      return data[0]?.color; // Access the color property from the response
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   // Funktion zum Aktualisieren des ausgewählten Zustands eines Tasks
   const handleTaskSelection = (taskId: number) => {
     setSelectedTasks((prevSelectedTasks) =>
       prevSelectedTasks.includes(taskId)
         ? prevSelectedTasks.filter((id) => id !== taskId)
         : [...prevSelectedTasks, taskId]
+    );
+  };
+
+  const TaskItem = ({ taskname, color, task_id }: {
+    taskname: string,
+    color: string,
+    task_id: string;
+  }) => {
+    return (
+      <TouchableOpacity
+        key={parseInt(task_id)}
+        onPress={() => router.push(`/task-detail/${task_id}`)}
+      >
+        <View style={styles.item}>
+          <View style={styles.itemLeft}>
+            <View
+              style={[styles.square, { backgroundColor: color }]}
+            ></View>
+            <Text style={styles.itemText}>{taskname}</Text>
+          </View>
+          <CheckBox
+            value={selectedTasks.includes(parseInt(task_id))}
+            onValueChange={() => handleTaskSelection(parseInt(task_id))}
+          />
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -112,22 +162,11 @@ export default function Tasks() {
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
           {tasks.map((task) => (
-            <Pressable
-              key={task.task_id}
-              onPress={() => router.push(`/task-detail/${task.task_id}`)}
-            >
-              <View key={task.task_id} style={styles.item}>
-                <View style={styles.itemLeft}>
-                  <View style={styles.square}></View>
-
-                  <Text>{task.taskname}</Text>
-                </View>
-                <CheckBox
-                  value={selectedTasks.includes(task.task_id)}
-                  onValueChange={() => handleTaskSelection(task.task_id)}
-                />
-              </View>
-            </Pressable>
+            <TaskItem
+              taskname={task.taskname}
+              color={task.color}
+              task_id={task.task_id.toString()}
+            />
           ))}
         </ScrollView>
         {/* "+"-Button am unteren Rand */}
@@ -162,7 +201,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     alignSelf: "center",
     textAlign: "center",
-    textAlign: "center",
     marginBottom: 20,
   },
   items: {
@@ -185,13 +223,11 @@ const styles = StyleSheet.create({
   square: {
     width: 24,
     height: 24,
-    backgroundColor: "#55BCF6",
-    opacity: 0.4,
     borderRadius: 5,
     marginRight: 15,
   },
   itemText: {
-    maxWidth: "80%",
+    alignSelf: "center",
   },
   addButton: {
     position: "absolute",

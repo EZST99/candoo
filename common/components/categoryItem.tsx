@@ -20,7 +20,7 @@ const CategoryItem = (props: Props) => {
       key={props.category_id}
       onPress={() => router.push(`/tasks?category_id=${props.category_id}`)} //--> route to tasks with the category id passed (select * from tasks where category_id = ...)
     >
-      <View style={styles.item}>
+      <View key={props.category_id} style={styles.item}>
         <View style={styles.itemLeft}>
           <View
             style={[styles.square, { backgroundColor: props.color }]}
