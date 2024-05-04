@@ -21,14 +21,17 @@ export default function Tasks() {
     useCallback(() => {
       console.log("current category id:" + category_id);
       getTasks();
-    }, [])
+    }, [category_id])
   );
 
   async function getTasks() {
     try {
       let url = '/api/taskView';
-      if (category_id) {
-        url = `/api/taskViewByCategory?category_id=${category_id}`;
+      if (category_id !== undefined) {
+        console.log("category id exists");
+        url = `/api/taskView?category_id=${category_id}`;
+      } else {
+        console.log("category id does not exist, view all");
       }
 
       const response = await fetch(url, {
@@ -68,7 +71,7 @@ export default function Tasks() {
           }}
         />
         {/* Today's Tasks */}
-        <Text style={styles.sectionTitle}>Tasks</Text>
+        <Text style={styles.sectionTitle}>{category_id ? category_id + " \n" : "All "}Tasks</Text>
 
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
@@ -122,6 +125,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
     alignSelf: "center",
+    textAlign: "center",
     marginBottom: 20,
   },
   items: {
