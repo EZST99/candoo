@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     alignSelf: "center",
     textAlign: "center",
+    textAlign: "center",
     marginBottom: 20,
   },
   items: {
