@@ -1,17 +1,23 @@
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback, ScrollView } from "react-native";
-import Button from "../../common/components/Button";
 import TaskInput from "../../common/components/TaskInput";
-import Input from "../../common/components/Input";
 import { TaskCreationRequest } from "../api/taskCreation+api";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { LinearGradient } from 'expo-linear-gradient';
+import { Dropdown } from 'react-native-element-dropdown';
+import { useFocusEffect } from "expo-router";
 
 interface Props {
   back: () => void;
 }
+
+interface Category {
+  categoryname: string;
+  category_id: string;
+}
+
 
 function TaskCreation({ back }: Props) {
 
@@ -23,18 +29,20 @@ function TaskCreation({ back }: Props) {
   const [show, setShow] = useState(false);
   const [importance, setImportance] = useState("");
   const [urgency, setUrgency] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isFocus, setIsFocus] = useState(false);
 
-  const toggleDatepicker = () => {
-    setShow(!show);
-  };
+  useFocusEffect(
+    useCallback(() => {
+      getCategory();
+    }, [])
+  );
 
   const setDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || due_date;
     setShow(false); // Close the DateTimePicker after selecting a date
     setDue_date(currentDate);
   };
-
-
 
   const validateInput = () => {
     if (!taskname || !category_id || !importance || !urgency || !due_date) {
@@ -93,6 +101,22 @@ function TaskCreation({ back }: Props) {
       });
   }
 
+  async function getCategory() {
+    try {
+      const response = await fetch("/api/categoryView", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setCategories(data);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -126,10 +150,18 @@ function TaskCreation({ back }: Props) {
             onChangeText={setTaskname}
             placeholder="Task Name"
           />
-          <TaskInput
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            data={categories}
+            placeholderStyle={{ color: "rgba(0, 0, 0, 0.19)" }}
+            labelField="categoryname"
+            valueField="category_id"
             value={category_id}
-            onChangeText={setCategory_id}
-            placeholder="Category"
+            placeholder={!isFocus ? 'Select category' : '...'}
+            onChange={(item) => {
+              setCategory_id(item.category_id);
+              setIsFocus(false);
+            }}
           />
           <TaskInput
             value={description}
@@ -181,7 +213,6 @@ function TaskCreation({ back }: Props) {
               </View>
             </TouchableWithoutFeedback>}
         </ScrollView>
-
       </View>
 
       <View style={styles.btn}>
@@ -225,6 +256,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     flex: 1,
+    textAlign: "center",
+  },
+  dropdown: {
+    backgroundColor: "#fff",
+    borderWidth: 3,
+    borderColor: "rgba(0, 0, 0, 0.19)",
+    padding: 10,
+    margin: 10,
+    borderRadius: 20,
     textAlign: "center",
   },
 });
