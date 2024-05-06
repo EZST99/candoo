@@ -2,16 +2,25 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
+import authenticatedFetch from "../../common/authenticatedFetch";
 import Button from "../../common/components/Button";
 
 const TaskDetailScreen = () => {
-  const [task, setTask] = useState({ taskname: "", category_id: "", due_date: "", importance: "", urgency: "", description: "" });
+  const [task, setTask] = useState({
+    taskname: "",
+    category_id: "",
+    due_date: "",
+    importance: "",
+    urgency: "",
+    description: "",
+  });
   const { taskId } = useLocalSearchParams<{ taskId: string }>();
   const [category, setCategory] = useState("");
 
   const fetchTask = async () => {
-    const response = await fetch(`/api/taskDetails?task_id=${taskId}`);
-    const taskData = await response.json();
+    const taskData = await authenticatedFetch(
+      `/api/taskDetails?task_id=${taskId}`
+    );
     console.log("Task data:");
     console.log(taskData);
     setTask({
@@ -25,8 +34,9 @@ const TaskDetailScreen = () => {
   };
 
   const fetchCategoryname = async () => {
-    const response = await fetch(`/api/categoryDetails?category_id=${task.category_id}`);
-    const taskData = await response.json();
+    const taskData = await authenticatedFetch(
+      `/api/categoryDetails?category_id=${task.category_id}`
+    );
     console.log("Category data:");
     console.log(taskData);
     setCategory(taskData[0].categoryname);
@@ -52,23 +62,28 @@ const TaskDetailScreen = () => {
       <Button
         title="Delete"
         onPress={() => {
-          Alert.alert("Delete Task", "Are you sure you want to delete this task?\n\"" + task.taskname + "\" will be permanently deleted.", [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "OK",
-              onPress: async () => {
-                await fetch(`/api/taskDeletion`, {
-                  method: "DELETE",
-                  body: JSON.stringify({ task_id: taskId }),
-                });
-                Alert.alert("Success", "Task successfully deleted.");
-                router.push(`../tasks`);
+          Alert.alert(
+            "Delete Task",
+            'Are you sure you want to delete this task?\n"' +
+              task.taskname +
+              '" will be permanently deleted.',
+            [
+              {
+                text: "Cancel",
+                style: "cancel",
               },
-            },
-          ],
+              {
+                text: "OK",
+                onPress: async () => {
+                  await authenticatedFetch(`/api/taskDeletion`, {
+                    method: "DELETE",
+                    body: JSON.stringify({ task_id: taskId }),
+                  });
+                  Alert.alert("Success", "Task successfully deleted.");
+                  router.push(`../tasks`);
+                },
+              },
+            ]
           );
         }}
       />

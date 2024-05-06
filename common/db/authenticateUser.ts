@@ -2,9 +2,10 @@ import { eq } from "drizzle-orm";
 import db from "./connection";
 import { users } from "./schema";
 
-async function getUser(req: Request) {
+async function authenticateUser(req: Request) {
   const sessionId = req.headers.get("Authorization")?.replace("Bearer ", "");
   if (!sessionId) throw new Error("No session id provided");
+  console.log("Session ID: ", sessionId);
   const res = await db
     .select()
     .from(users)
@@ -15,4 +16,4 @@ async function getUser(req: Request) {
   return res[0];
 }
 
-export default getUser;
+export default authenticateUser;
