@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/PlusButton";
 
 interface Task {
@@ -25,13 +26,15 @@ export default function Tasks() {
 
   async function getTasks() {
     try {
-      const response = await fetch(`/api/taskViewByCategory?category_id=${category_id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const data = await authenticatedFetch(
+        `/api/taskViewByCategory?category_id=${category_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setTasks(data);
     } catch (error) {
       console.error(error);

@@ -1,5 +1,6 @@
 import { Inter_900Black, useFonts } from "@expo-google-fonts/inter";
 import { Stack } from "expo-router";
+import "react-native-reanimated";
 import AuthProvider from "../common/AuthProvider";
 
 function AppLayout() {
