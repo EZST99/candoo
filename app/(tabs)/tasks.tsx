@@ -1,4 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
+import { InferSelectModel } from "drizzle-orm";
 import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -12,13 +13,8 @@ import {
 } from "react-native";
 import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/PlusButton";
-
-interface Task {
-  task_id: number;
-  taskname: string;
-  category_id: number;
-  color: string;
-}
+import { tasks as tasksTable } from "../../common/db/schema";
+import { MarkAsDoneResult } from "../api/markAsDone+api";
 
 interface Category {
   category_id: number;
@@ -27,8 +23,9 @@ interface Category {
 }
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>([]); // Definiere den Typ für das tasks-Array
-  const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
+  const [tasks, setTasks] = useState<
+    (InferSelectModel<typeof tasksTable> & { color: string })[]
+  >([]); // Definiere den Typ für das tasks-Array
   const router = useRouter();
   const { category_id } = useLocalSearchParams<{ category_id: string }>();
   const [category, setCategory] = useState<Category[] | undefined>([]);
@@ -51,7 +48,9 @@ export default function Tasks() {
         console.log("category id does not exist, view all");
       }
 
-      let data = await authenticatedFetch(url, {
+      let data = await authenticatedFetch<
+        Array<InferSelectModel<typeof tasksTable>>
+      >(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -61,13 +60,15 @@ export default function Tasks() {
       console.log(data);
       // Fetch the category color for each task
       data = await Promise.all(
-        data.map(async (task: Task) => {
+        data.map(async (task) => {
           let color = await getCategoryColor(task.category_id);
           return { ...task, color };
         })
       );
 
-      setTasks(data);
+      setTasks(
+        data as (InferSelectModel<typeof tasksTable> & { color: string })[]
+      );
     } catch (error) {
       console.error(error);
     }
@@ -114,21 +115,46 @@ export default function Tasks() {
 
   // Funktion zum Aktualisieren des ausgewählten Zustands eines Tasks
   const handleTaskSelection = (taskId: number) => {
-    setSelectedTasks((prevSelectedTasks) =>
-      prevSelectedTasks.includes(taskId)
-        ? prevSelectedTasks.filter((id) => id !== taskId)
-        : [...prevSelectedTasks, taskId]
+    const newDoneState = !tasks.find((task) => task.task_id === taskId)
+      ?.is_done;
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.task_id === taskId ? { ...task, is_done: newDoneState } : task
+      )
     );
+
+    authenticatedFetch<MarkAsDoneResult>("/api/markAsDone", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        task_id: taskId,
+        is_done: newDoneState,
+      }),
+    })
+      .then(({ task_id, is_done }) => {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.task_id === task_id ? { ...task, is_done } : task
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Task selection failed:", error);
+      });
   };
 
   const TaskItem = ({
     taskname,
     color,
     task_id,
+    is_done,
   }: {
     taskname: string;
     color: string;
     task_id: string;
+    is_done: boolean;
   }) => {
     return (
       <TouchableOpacity
@@ -141,7 +167,7 @@ export default function Tasks() {
             <Text style={styles.itemText}>{taskname}</Text>
           </View>
           <CheckBox
-            value={selectedTasks.includes(parseInt(task_id))}
+            value={is_done}
             onValueChange={() => handleTaskSelection(parseInt(task_id))}
           />
         </View>
@@ -175,6 +201,8 @@ export default function Tasks() {
               taskname={task.taskname}
               color={task.color}
               task_id={task.task_id.toString()}
+              is_done={task.is_done}
+              key={task.task_id}
             />
           ))}
         </ScrollView>
