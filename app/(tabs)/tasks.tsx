@@ -3,7 +3,14 @@ import CheckBox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/PlusButton";
 
 interface Task {
@@ -36,7 +43,7 @@ export default function Tasks() {
 
   async function getTasks() {
     try {
-      let url = '/api/taskView';
+      let url = "/api/taskView";
       if (category_id !== undefined) {
         console.log("category id exists, view from category");
         url = `/api/taskView?category_id=${category_id}`;
@@ -44,20 +51,21 @@ export default function Tasks() {
         console.log("category id does not exist, view all");
       }
 
-      const response = await fetch(url, {
+      let data = await authenticatedFetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      let data = await response.json();
       console.log("tasks from category: ");
       console.log(data);
       // Fetch the category color for each task
-      data = await Promise.all(data.map(async (task: Task) => {
-        let color = await getCategoryColor(task.category_id);
-        return { ...task, color };
-      }));
+      data = await Promise.all(
+        data.map(async (task: Task) => {
+          let color = await getCategoryColor(task.category_id);
+          return { ...task, color };
+        })
+      );
 
       setTasks(data);
     } catch (error) {
@@ -67,20 +75,18 @@ export default function Tasks() {
 
   async function getCategory() {
     try {
-
       if (category_id === undefined) {
         console.log("category id does not exist, don't fetch category");
         return;
       }
       console.log("category id exists");
       let url = `/api/categoryDetails?category_id=${category_id}`;
-      const response = await fetch(url, {
+      const data = await authenticatedFetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.json();
       console.log("category: ");
       console.log(data);
       console.log("categoryname: ");
@@ -94,13 +100,12 @@ export default function Tasks() {
   async function getCategoryColor(category_id: number) {
     try {
       const url = `/api/categoryDetails?category_id=${category_id}`;
-      const response = await fetch(url, {
+      const data = await authenticatedFetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.json();
       return data[0]?.color; // Access the color property from the response
     } catch (error) {
       console.error(error);
@@ -116,9 +121,13 @@ export default function Tasks() {
     );
   };
 
-  const TaskItem = ({ taskname, color, task_id }: {
-    taskname: string,
-    color: string,
+  const TaskItem = ({
+    taskname,
+    color,
+    task_id,
+  }: {
+    taskname: string;
+    color: string;
     task_id: string;
   }) => {
     return (
@@ -128,9 +137,7 @@ export default function Tasks() {
       >
         <View style={styles.item}>
           <View style={styles.itemLeft}>
-            <View
-              style={[styles.square, { backgroundColor: color }]}
-            ></View>
+            <View style={[styles.square, { backgroundColor: color }]}></View>
             <Text style={styles.itemText}>{taskname}</Text>
           </View>
           <CheckBox
@@ -157,7 +164,9 @@ export default function Tasks() {
           }}
         />
         {/* Today's Tasks */}
-        <Text style={styles.sectionTitle}>{category_id ? category?.[0]?.categoryname + " \n" : "All "}Tasks</Text>
+        <Text style={styles.sectionTitle}>
+          {category_id ? category?.[0]?.categoryname + " \n" : "All "}Tasks
+        </Text>
 
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>

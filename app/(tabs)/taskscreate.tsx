@@ -1,13 +1,23 @@
-import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, View, Alert, TouchableWithoutFeedback, ScrollView } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import authenticatedFetch from "../../common/authenticatedFetch";
+import ButtonCircle from "../../common/components/ButtonCircle";
 import TaskInput from "../../common/components/TaskInput";
 import { TaskCreationRequest } from "../api/taskCreation+api";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import ButtonCircle from "../../common/components/ButtonCircle";
-import { LinearGradient } from 'expo-linear-gradient';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useFocusEffect } from "expo-router";
 
 interface Props {
   back: () => void;
@@ -18,10 +28,7 @@ interface Category {
   category_id: string;
 }
 
-
 function TaskCreation({ back }: Props) {
-
-  const [user_id, setUser_id] = useState(1);
   const [category_id, setCategory_id] = useState("");
   const [taskname, setTaskname] = useState("");
   const [description, setDescription] = useState("");
@@ -49,15 +56,22 @@ function TaskCreation({ back }: Props) {
       Alert.alert("Validation Error", "All fields must be filled.");
       return false;
     }
-    if (isNaN(parseInt(importance)) || isNaN(parseInt(urgency)) || parseInt(importance) < 1 || parseInt(urgency) < 1) {
-      Alert.alert("Validation Error", "Importance and urgency must be positive numbers.");
+    if (
+      isNaN(parseInt(importance)) ||
+      isNaN(parseInt(urgency)) ||
+      parseInt(importance) < 1 ||
+      parseInt(urgency) < 1
+    ) {
+      Alert.alert(
+        "Validation Error",
+        "Importance and urgency must be positive numbers."
+      );
       return false;
     }
     return true;
   };
 
   const resetForm = () => {
-    setUser_id(1);
     setCategory_id("");
     setTaskname("");
     setDescription("");
@@ -65,7 +79,7 @@ function TaskCreation({ back }: Props) {
     setImportance("");
     setUrgency("");
     return;
-  }
+  };
 
   async function handleTaskCreation() {
     if (!validateInput()) {
@@ -73,7 +87,6 @@ function TaskCreation({ back }: Props) {
     }
 
     const body: TaskCreationRequest = {
-      user_id,
       category_id: Number(category_id),
       taskname,
       description,
@@ -82,14 +95,13 @@ function TaskCreation({ back }: Props) {
       urgency: Number(urgency),
     };
 
-    fetch("/api/taskCreation", {
+    authenticatedFetch("/api/taskCreation", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     })
-      .then((response) => response.json())
       .then((data) => {
         console.log("Task Creation successful:", data);
         Alert.alert("Success", "Task successfully created.");
@@ -103,13 +115,12 @@ function TaskCreation({ back }: Props) {
 
   async function getCategory() {
     try {
-      const response = await fetch("/api/categoryView", {
+      const data = await authenticatedFetch("/api/categoryView", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const data = await response.json();
       setCategories(data);
       console.log(data);
     } catch (error) {
@@ -122,16 +133,14 @@ function TaskCreation({ back }: Props) {
       <View style={styles.container}>
         <LinearGradient
           // Background Linear Gradient
-          colors={['rgba(255, 0, 0, 0.72)', 'white']}
-          style={
-            {
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: '110%',
-            }
-          }
+          colors={["rgba(255, 0, 0, 0.72)", "white"]}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            height: "110%",
+          }}
         />
         <View style={styles.titleContainer}>
           <View>
@@ -151,13 +160,13 @@ function TaskCreation({ back }: Props) {
             placeholder="Task Name"
           />
           <Dropdown
-            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
             data={categories}
             placeholderStyle={{ color: "rgba(0, 0, 0, 0.19)" }}
             labelField="categoryname"
             valueField="category_id"
             value={category_id}
-            placeholder={!isFocus ? 'Select category' : '...'}
+            placeholder={!isFocus ? "Select category" : "..."}
             onChange={(item) => {
               setCategory_id(item.category_id);
               setIsFocus(false);
@@ -181,37 +190,51 @@ function TaskCreation({ back }: Props) {
             placeholder="Pick Urgency"
           />
 
-          {show ?
-            <View style={{
-              backgroundColor: "#fff",
-              borderWidth: 3,
-              borderColor: "rgba(0, 0, 0, 0.19)",
-              margin: 10,
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <DateTimePicker mode="date" value={due_date ?? new Date()} onChange={setDate} />
-            </View>
-            :
-            <TouchableWithoutFeedback onPress={() => setShow(true)} style={{ padding: 10 }}>
-              <View style={{
+          {show ? (
+            <View
+              style={{
                 backgroundColor: "#fff",
                 borderWidth: 3,
                 borderColor: "rgba(0, 0, 0, 0.19)",
                 margin: 10,
                 borderRadius: 20,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 10,
-              }}>
-                {due_date == null ?
-                  <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>Pick Due Date</Text>
-                  :
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <DateTimePicker
+                mode="date"
+                value={due_date ?? new Date()}
+                onChange={setDate}
+              />
+            </View>
+          ) : (
+            <TouchableWithoutFeedback
+              onPress={() => setShow(true)}
+              style={{ padding: 10 }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  borderWidth: 3,
+                  borderColor: "rgba(0, 0, 0, 0.19)",
+                  margin: 10,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingVertical: 10,
+                }}
+              >
+                {due_date == null ? (
+                  <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>
+                    Pick Due Date
+                  </Text>
+                ) : (
                   <Text>{due_date.toDateString()}</Text>
-                }
+                )}
               </View>
-            </TouchableWithoutFeedback>}
+            </TouchableWithoutFeedback>
+          )}
         </ScrollView>
       </View>
 

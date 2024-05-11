@@ -1,7 +1,7 @@
-import getUser from "../../common/db/getUser";
+import authenticateUser from "../../common/db/authenticateUser";
 
 export async function GET(request: Request) {
-  const user = await getUser(request);
+  const user = await authenticateUser(request);
 
   return Response.json({
     username: user.username,

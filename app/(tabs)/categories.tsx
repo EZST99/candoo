@@ -1,17 +1,11 @@
-import {
-  Pressable,
-  View,
-  Text,
-  StyleSheet,
-  Task,
-  ScrollView,
-} from "react-native";
-import CategoryItem from "../../common/components/categoryItem";
-import { LinearGradient } from "expo-linear-gradient";
-import ButtonCircle from "../../common/components/ButtonCircle";
 import { AntDesign } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import authenticatedFetch from "../../common/authenticatedFetch";
+import ButtonCircle from "../../common/components/ButtonCircle";
+import CategoryItem from "../../common/components/categoryItem";
 
 interface Category {
   categoryname: string;
@@ -31,13 +25,15 @@ export default function category() {
 
   async function getCategory() {
     try {
-      const response = await fetch("/api/categoryView", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const data = await authenticatedFetch<Array<Category>>(
+        "/api/categoryView",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setCategories(data);
       console.log(data);
     } catch (error) {
