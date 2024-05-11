@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   date,
@@ -31,6 +32,9 @@ export const tasks = mysqlTable("tasks", {
   importance: int("importance").default(3).notNull(),
   urgency: int("urgency").default(3).notNull(),
   is_done: boolean("is_done").default(false).notNull(),
+  created_at: date("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
 
 export const categories = mysqlTable("categories", {

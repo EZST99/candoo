@@ -142,6 +142,11 @@ export default function Tasks() {
       })
       .catch((error) => {
         console.error("Task selection failed:", error);
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.task_id === taskId ? { ...task, is_done: !newDoneState } : task
+          )
+        );
       });
   };
 
@@ -196,15 +201,23 @@ export default function Tasks() {
 
         {/* Rendern der gefetchten Elemente */}
         <ScrollView>
-          {tasks.map((task) => (
-            <TaskItem
-              taskname={task.taskname}
-              color={task.color}
-              task_id={task.task_id.toString()}
-              is_done={task.is_done}
-              key={task.task_id}
-            />
-          ))}
+          {tasks
+            // sort based on created at and sort done tasks to the bottom
+            .sort((a, b) => {
+              if (a.is_done === b.is_done) {
+                return a.created_at < b.created_at ? 1 : -1;
+              }
+              return a.is_done ? 1 : -1;
+            })
+            .map((task) => (
+              <TaskItem
+                taskname={task.taskname}
+                color={task.color}
+                task_id={task.task_id.toString()}
+                is_done={task.is_done}
+                key={task.task_id}
+              />
+            ))}
         </ScrollView>
         {/* "+"-Button am unteren Rand */}
       </View>
