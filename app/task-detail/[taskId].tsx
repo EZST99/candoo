@@ -1,9 +1,17 @@
 // TaskDetailScreen.tsx
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, Text, View, StyleSheet } from "react-native";
 import authenticatedFetch from "../../common/authenticatedFetch";
 import Button from "../../common/components/Button";
+import { LinearGradient } from "expo-linear-gradient";
+import ButtonCircle from "../../common/components/ButtonCircle";
+import { Feather } from "@expo/vector-icons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import TaskInput from "../../common/components/TaskInput";
+
+
+
 
 const TaskDetailScreen = () => {
   const [task, setTask] = useState({
@@ -33,6 +41,15 @@ const TaskDetailScreen = () => {
     });
   };
 
+  const handleTaskChange = () => {
+    router.push(`../tasks`);
+  };
+
+  const validateInput = () => {
+    return true;
+  };
+
+
   const fetchCategoryname = async () => {
     const taskData = await authenticatedFetch(
       `/api/categoryDetails?category_id=${task.category_id}`
@@ -50,17 +67,36 @@ const TaskDetailScreen = () => {
     fetchCategoryname();
   }, [task.category_id]);
 
+  
   return (
-    <View>
-      <Text>Task Name: {task.taskname}</Text>
-      <Text>Category: {category}</Text>
-      <Text>Due Date: {task.due_date}</Text>
-      <Text>Importance: {task.importance}</Text>
-      <Text>Urgency: {task.urgency}</Text>
-      <Text>Description: {task.description}</Text>
+    <View style={styles.container}>
+      <LinearGradient
+          // Background Linear Gradient
+          colors={["rgba(255, 0, 0, 0.72)", "white"]}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            height: "110%",
+          }}
+        />
+      <View style={styles.tasksWrapper}>
+        <Text style={styles.categoryTitle}>{category}</Text>
+        <Text style={styles.sectionTitle}>{task.taskname}</Text>
+        <View style={styles.items}>
+          <Text style={styles.itemLeft}>Due Date: {task.due_date}</Text>
+          <Text style={styles.itemLeft}>Importance: {task.importance}</Text>
+          <Text style={styles.itemLeft}>Urgency: {task.urgency}</Text>
+          <Text style={styles.itemLeft}>Description: {task.description}</Text>
+          <TaskInput style={styles.item}
+            onChangeText={(text) => setTask({ ...task, description: text })}
+            placeholder="Task Description"
+          />
+        </View>
       {/* Add additional task details here */}
-      <Button
-        title="Delete"
+      <View style={styles.delbtn}>
+      <MaterialIcons name="delete-outline" size={24} color="white"
         onPress={() => {
           Alert.alert(
             "Delete Task",
@@ -87,8 +123,82 @@ const TaskDetailScreen = () => {
           );
         }}
       />
+      </View>
+      <View style={styles.btn}>
+        <ButtonCircle onPress={handleTaskChange}>
+          <View>
+            <Feather name="check" size={24} color="white" />
+          </View>
+        </ButtonCircle>
+      </View>
     </View>
+  </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    /*alignItems: "center",
+    justifyContent: "center",*/
+  },
+  tasksWrapper: {
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+
+    fontFamily: "Inter",
+    fontWeight: "700",
+    color: "#fff",
+    alignSelf: "center",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  items: {
+    marginTop: 30,
+  },
+  item: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  itemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    color: "#fff",
+    marginBottom: 10,
+  },
+  itemText: {
+    alignSelf: "center",
+  },
+  categoryTitle: {
+    fontSize: 12,
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  btn: {
+    position: "relative",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  delbtn: {
+    position: "relative",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    bottom: 10,
+    width: "100%",
+    color: "white",
+    },
+});
 
 export default TaskDetailScreen;
