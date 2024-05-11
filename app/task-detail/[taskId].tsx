@@ -1,17 +1,16 @@
 // TaskDetailScreen.tsx
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Text, View, StyleSheet } from "react-native";
+import { Alert, Text, View, StyleSheet, TextInput } from "react-native";
 import authenticatedFetch from "../../common/authenticatedFetch";
-import Button from "../../common/components/Button";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { Feather } from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import TaskInput from "../../common/components/TaskInput";
-
-
-
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { TaskUpdateRequest } from "../api/taskDetailEdit+api";
 
 const TaskDetailScreen = () => {
   const [task, setTask] = useState({
@@ -41,15 +40,6 @@ const TaskDetailScreen = () => {
     });
   };
 
-  const handleTaskChange = () => {
-    router.push(`../tasks`);
-  };
-
-  const validateInput = () => {
-    return true;
-  };
-
-
   const fetchCategoryname = async () => {
     const taskData = await authenticatedFetch(
       `/api/categoryDetails?category_id=${task.category_id}`
@@ -66,6 +56,55 @@ const TaskDetailScreen = () => {
   useEffect(() => {
     fetchCategoryname();
   }, [task.category_id]);
+  
+  const validateInput = () => {
+    if (
+      isNaN(parseInt(task.importance)) ||
+      isNaN(parseInt(task.urgency)) ||
+      parseInt(task.importance) < 1 ||
+      parseInt(task.urgency) < 1
+    ) {
+      Alert.alert(
+        "Validation Error",
+        "Importance and urgency must be positive numbers."
+      );
+      return false;
+    }
+    return true;
+  };
+  
+
+  async function handleTaskUpdate() {
+    if (!validateInput()) {
+      return;
+    }
+
+    const body: TaskUpdateRequest = {
+      task_id: Number(taskId),
+      category_id: Number(task.category_id),
+      taskname: task.taskname,
+      due_date: new Date(task.due_date),
+      description : task.description,
+      importance: Number(task.importance),
+      urgency: Number(task.urgency),
+    };
+
+    authenticatedFetch("../api/taskDetailEdit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((data) => {
+        console.log("Task Update successful:", data);
+        Alert.alert("Success", "Task successfully updated.");
+      })
+      .catch((error) => {
+        console.error("Task Update failed:", error);
+        Alert.alert("Error", "Failed to update task.");
+      });
+  }
 
   
   return (
@@ -82,14 +121,29 @@ const TaskDetailScreen = () => {
           }}
         />
       <View style={styles.tasksWrapper}>
-        <Text style={styles.categoryTitle}>{category}</Text>
-        <Text style={styles.sectionTitle}>{task.taskname}</Text>
+        <TextInput 
+        style={styles.categoryTitle}>
+          {category}
+          </TextInput>
+        <TextInput style={styles.sectionTitle}>{task.taskname}</TextInput>
         <View style={styles.items}>
-          <Text style={styles.itemLeft}>Due Date: {task.due_date}</Text>
-          <Text style={styles.itemLeft}>Importance: {task.importance}</Text>
-          <Text style={styles.itemLeft}>Urgency: {task.urgency}</Text>
+          <TextInput 
+          style={styles.itemLeft}>
+            Due Date: {task.due_date}
+          </TextInput>
+          <TextInput 
+          keyboardType="number-pad"
+          style={styles.itemLeft}
+          onChangeText={(number) => setTask({ ...task, importance: number })}>
+            Importance: {task.importance}
+            </TextInput>
+          <TextInput 
+          keyboardType="number-pad"
+          style={styles.itemLeft}>
+            Urgency: {task.urgency}
+          </TextInput>
           <Text style={styles.itemLeft}>Description: {task.description}</Text>
-          <TaskInput style={styles.item}
+          <TextInput style={styles.item}
             onChangeText={(text) => setTask({ ...task, description: text })}
             placeholder="Task Description"
           />
@@ -125,7 +179,7 @@ const TaskDetailScreen = () => {
       />
       </View>
       <View style={styles.btn}>
-        <ButtonCircle onPress={handleTaskChange}>
+        <ButtonCircle onPress={handleTaskUpdate}>
           <View>
             <Feather name="check" size={24} color="white" />
           </View>
