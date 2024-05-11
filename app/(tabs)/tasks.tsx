@@ -39,7 +39,7 @@ export default function Tasks() {
       let url = '/api/taskView';
       if (category_id !== undefined) {
         console.log("category id exists, view from category");
-        url = `/api/taskView?category_id=${category_id}`;
+        url = `/api/taskViewByCategory?category_id=${category_id}`;
       } else {
         console.log("category id does not exist, view all");
       }
