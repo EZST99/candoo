@@ -14,11 +14,13 @@ export interface TaskUpdateRequest {
 }
 
 export async function PUT(request: Request) {
+  console.log("HFJKÖLDJSKLÖJFKLÖDSJÖKFJSÖKLJFÖKLDASÖJÖJLAÖJFÖLKDJAÖLKJFÖKLDA");
   const body = (await request.json()) as TaskUpdateRequest;
   const user = await authenticateUser(request);
 
   // Überprüfen, ob der Benutzer die Berechtigung hat, diese Aufgabe zu bearbeiten
 
+  console.log("body: ", body);
   await db
     .update(tasks)
     .set({
