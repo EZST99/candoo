@@ -139,10 +139,10 @@ const TaskDetailScreen = () => {
             setTask({ ...task, category_id: item.category_id.toString() });
           }}
         />
- 
+
         <Text style={styles.sectionTitle}></Text>
         <TextInput
-          style={styles.item}
+          style={styles.sectionTitle}
           onChangeText={(text) => setTask({ ...task, taskname: text })}
           value={task.taskname}
           placeholder="Task Name"
