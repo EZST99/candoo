@@ -5,14 +5,16 @@ import { InferSelectModel } from "drizzle-orm";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { categories as categoriesTable } from "../../common/db/schema";
 import { TaskUpdateRequest } from "../api/taskDetailEdit+api";
+import DateTimePicker, {DateTimePickerEvent,} from "@react-native-community/datetimepicker";
 
 const TaskDetailScreen = () => {
+  const [show, setShow] = useState(false);
   const [task, setTask] = useState({
     taskname: "",
     category_id: "",
@@ -20,11 +22,19 @@ const TaskDetailScreen = () => {
     importance: "",
     urgency: "",
     description: "",
+    
   });
   const { taskId } = useLocalSearchParams<{ taskId: string }>();
   const [categories, setCategories] = useState<
     Array<InferSelectModel<typeof categoriesTable>>
   >([]);
+
+  const setDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const currentDate = selectedDate || new Date(task.due_date);
+    setTask({ ...task, due_date: currentDate.toISOString() });
+    setShow(false); // Close the DateTimePicker after selecting a date
+  };
+  
 
   const fetchTask = async () => {
     const taskData = await authenticatedFetch(
@@ -148,19 +158,27 @@ const TaskDetailScreen = () => {
           placeholder="Task Name"
         />
         <View style={styles.items}>
-          <TextInput style={styles.itemLeft}>
-            Due Date: {task.due_date}
-          </TextInput>
-          <Text>Importance: </Text>
+        <TouchableWithoutFeedback onPress={() => setShow(true)}>
+          <View style={styles.itemLeft}>
+            {show && (
+              <DateTimePicker
+                mode="date"
+                onChange={setDate}
+                value={new Date(task.due_date)}
+              />
+            )}
+            <Text style={styles.itemLeft}>Due Date: {new Date(task.due_date).toLocaleDateString()}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+
+          <Text style={styles.itemLeft}>Importance: </Text>
           <TextInput
-            keyboardType="number-pad"
             style={styles.itemLeft}
+            keyboardType="number-pad"
             onChangeText={(number) => setTask({ ...task, importance: number })}
-            value={task.importance}
+            value={task.importance.toString()}
+            placeholder="Importance"
           />
-          <TextInput keyboardType="number-pad" style={styles.itemLeft}>
-            Urgency: {task.urgency}
-          </TextInput>
           <Text style={styles.itemLeft}>Description: {task.description}</Text>
           <TextInput
             style={styles.item}
