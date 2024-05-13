@@ -139,13 +139,14 @@ const TaskDetailScreen = () => {
             setTask({ ...task, category_id: item.category_id.toString() });
           }}
         />
-        {/*<TextInput style={styles.categoryTitle}>
-          {
-            categories.find((c) => c.category_id === parseInt(task.category_id))
-              ?.categoryname
-          }
-        </TextInput>*/}
-        <TextInput style={styles.sectionTitle}>{task.taskname}</TextInput>
+ 
+        <Text style={styles.sectionTitle}></Text>
+        <TextInput
+          style={styles.item}
+          onChangeText={(text) => setTask({ ...task, taskname: text })}
+          value={task.taskname}
+          placeholder="Task Name"
+        />
         <View style={styles.items}>
           <TextInput style={styles.itemLeft}>
             Due Date: {task.due_date}
