@@ -170,15 +170,16 @@ const TaskDetailScreen = () => {
             <Text style={styles.itemLeft}>Due Date: {new Date(task.due_date).toLocaleDateString()}</Text>
           </View>
         </TouchableWithoutFeedback>
-
-          <Text style={styles.itemLeft}>Importance: </Text>
+        <View style={styles.itemLeft}>
+        <Text style={styles.itemLeft}>Importance: </Text>
           <TextInput
-            style={styles.itemLeft}
+          style={styles.itemLeft}
             keyboardType="number-pad"
             onChangeText={(number) => setTask({ ...task, importance: number })}
             value={task.importance.toString()}
             placeholder="Importance"
           />
+        </View>
           <Text style={styles.itemLeft}>Description: {task.description}</Text>
           <TextInput
             style={styles.item}
