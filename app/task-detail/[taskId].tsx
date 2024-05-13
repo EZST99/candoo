@@ -177,7 +177,6 @@ const TaskDetailScreen = () => {
             keyboardType="number-pad"
             onChangeText={(number) => setTask({ ...task, importance: number })}
             value={task.importance.toString()}
-            placeholder="Importance"
           />
         </View>
           <Text style={styles.itemLeft}>Description: {task.description}</Text>
