@@ -1,7 +1,7 @@
-import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from "expo-splash-screen";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import Welcome from "./Welcome";
+import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import Welcome from './Welcome';
 
 interface User {
   username: string;
@@ -14,19 +14,18 @@ interface AuthProviderData {
 
 const AuthContext = createContext<AuthProviderData>({
   user: null,
-  setSessionId: () => console.log("not initialized"),
+  setSessionId: () => console.log('not initialized'),
 });
 export const useUser = () => useContext(AuthContext);
 SplashScreen.preventAutoHideAsync();
 
 interface Props {
   children: React.ReactNode;
-  fontsLoaded: boolean;
 }
 
-function AuthProvider({ children, fontsLoaded }: Props) {
+function AuthProvider({ children }: Props) {
   const [sessionId, setSessionId] = useState<null | string>(
-    SecureStore.getItem("sessionId")
+    SecureStore.getItem('sessionId')
   );
   const [user, setUser] = useState<User | null>(null);
   const [appIsReady, setAppIsReady] = useState(false);
@@ -38,7 +37,7 @@ function AuthProvider({ children, fontsLoaded }: Props) {
       return;
     }
 
-    fetch("/api/user", {
+    fetch('/api/user', {
       headers: {
         Authorization: `Bearer ${sessionId}`,
       },
@@ -54,9 +53,9 @@ function AuthProvider({ children, fontsLoaded }: Props) {
   }, [sessionId]);
 
   useEffect(() => {
-    if (!appIsReady || !fontsLoaded) return;
+    if (!appIsReady) return;
     SplashScreen.hideAsync();
-  }, [fontsLoaded, appIsReady]);
+  }, [appIsReady]);
 
   return (
     <AuthContext.Provider value={{ user, setSessionId }}>
