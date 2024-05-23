@@ -67,36 +67,36 @@ function CategoryCreation({ back }: Props) {
   };
 
   const colorsList = [
-    "darkred",
-    "firebrick",
-    "crimson",
-    "red",
-    "orangered",
-    "tomato",
-    "indianred",
-    "orange",
-    "gold",
-    "yellow",
-    "greenyellow",
-    "lightgreen",
-    "green",
-    "lightseagreen",
-    "limegreen",
-    "lightskyblue",
-    "skyblue",
-    "dodgerblue",
-    "royalblue",
-    "blue",
-    "darkblue",
-    "purple",
-    "darkmagenta",
-    "magenta",
-    "hotpink",
-    "pink",
-    "lightpink",
-    "white",
-    "black",
-    "gray",
+    { name: "Dark Red", value: "darkred" },
+    { name: "Fire Brick", value: "firebrick" },
+    { name: "Crimson", value: "crimson" },
+    { name: "Red", value: "red" },
+    { name: "Orange Red", value: "orangered" },
+    { name: "Tomato", value: "tomato" },
+    { name: "Indian Red", value: "indianred" },
+    { name: "Orange", value: "orange" },
+    { name: "Gold", value: "gold" },
+    { name: "Yellow", value: "yellow" },
+    { name: "Green Yellow", value: "greenyellow" },
+    { name: "Light Green", value: "lightgreen" },
+    { name: "Green", value: "green" },
+    { name: "Light Sea Green", value: "lightseagreen" },
+    { name: "Lime Green", value: "limegreen" },
+    { name: "Light Sky Blue", value: "lightskyblue" },
+    { name: "Sky Blue", value: "skyblue" },
+    { name: "Dodger Blue", value: "dodgerblue" },
+    { name: "Royal Blue", value: "royalblue" },
+    { name: "Blue", value: "blue" },
+    { name: "Dark Blue", value: "darkblue" },
+    { name: "Purple", value: "purple" },
+    { name: "Dark Magenta", value: "darkmagenta" },
+    { name: "Magenta", value: "magenta" },
+    { name: "Hot Pink", value: "hotpink" },
+    { name: "Pink", value: "pink" },
+    { name: "Light Pink", value: "lightpink" },
+    { name: "White", value: "white" },
+    { name: "Black", value: "black" },
+    { name: "Gray", value: "gray" },
   ];
 
   return (
@@ -151,14 +151,14 @@ function CategoryCreation({ back }: Props) {
             }}
           >
             {color != "" ? (
-              <Text>{color}</Text>
+              <Text>{colorsList.find((c) => c.value === color)?.name}</Text>
             ) : (
               <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>Pick a color</Text>
             )}
           </View>
           <View style={styles.colorPicker}>
             {colorsList.map((color) => (
-              <ColorButton key={color} color={color} />
+              <ColorButton key={color.value} color={color.value} />
             ))}
           </View>
         </View>

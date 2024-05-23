@@ -139,7 +139,7 @@ function TaskCreation() {
           }}
         />
         <Text style={styles.title}>Create Task</Text>
-        <View style={styles.form}>
+        <ScrollView style={styles.form}>
           <TaskInput
             value={taskname}
             onChangeText={setTaskname}
@@ -221,7 +221,7 @@ function TaskCreation() {
               </View>
             </TouchableWithoutFeedback>
           )}
-        </View>
+        </ScrollView>
       </View>
 
       <View style={styles.btn}>
