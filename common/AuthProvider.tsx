@@ -63,7 +63,7 @@ function AuthProvider({ children }: Props) {
   if (isShowingAnimation) {
     setTimeout(() => {
       setIsShowingAnimation(false);
-    }, 3000);
+    }, 1200);
 
     return (
       <View style={styles.container}>
