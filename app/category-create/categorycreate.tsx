@@ -114,7 +114,7 @@ function CategoryCreation({ back }: Props) {
           }}
         />
         <View style={styles.titleContainer}>
-          <View>
+          <View style={styles.arrowButton}>
             <AntDesign
               name="arrowleft"
               size={24}
@@ -122,7 +122,14 @@ function CategoryCreation({ back }: Props) {
               onPress={back}
             />
           </View>
-          <Text style={styles.title}>Create Task</Text>
+          <Text style={styles.title}>Create Category</Text>
+          <View style={styles.arrowButton}>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="transparent"
+            />
+          </View>
         </View>
         <View style={styles.form}>
           <TaskInput
@@ -171,7 +178,7 @@ function CategoryCreation({ back }: Props) {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    padding: 24,
+    padding: 20,
   },
   form: {
     backgroundColor: "#fff",
@@ -190,8 +197,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
+    justifyContent: 'space-between',
     alignItems: "center",
-    paddingBottom: 24,
+    marginBottom: 20,
+
   },
   title: {
     fontSize: 24,
@@ -199,6 +208,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     textAlign: "center",
+
   },
   colorPicker: {
     backgroundColor: "#fff",
@@ -225,6 +235,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  arrowButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default CategoryCreation;

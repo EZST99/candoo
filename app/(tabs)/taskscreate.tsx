@@ -19,16 +19,12 @@ import ButtonCircle from "../../common/components/ButtonCircle";
 import TaskInput from "../../common/components/TaskInput";
 import { TaskCreationRequest } from "../api/taskCreation+api";
 
-interface Props {
-  back: () => void;
-}
-
 interface Category {
   categoryname: string;
   category_id: string;
 }
 
-function TaskCreation({ back }: Props) {
+function TaskCreation() {
   const [category_id, setCategory_id] = useState("");
   const [taskname, setTaskname] = useState("");
   const [description, setDescription] = useState("");
@@ -142,18 +138,8 @@ function TaskCreation({ back }: Props) {
             height: "110%",
           }}
         />
-        <View style={styles.titleContainer}>
-          <View>
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="white"
-              onPress={back}
-            />
-          </View>
-          <Text style={styles.title}>Create Task</Text>
-        </View>
-        <ScrollView style={styles.form}>
+        <Text style={styles.title}>Create Task</Text>
+        <View style={styles.form}>
           <TaskInput
             value={taskname}
             onChangeText={setTaskname}
@@ -235,7 +221,7 @@ function TaskCreation({ back }: Props) {
               </View>
             </TouchableWithoutFeedback>
           )}
-        </ScrollView>
+        </View>
       </View>
 
       <View style={styles.btn}>
@@ -252,7 +238,7 @@ function TaskCreation({ back }: Props) {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    padding: 24,
+    padding: 20,
   },
   form: {
     backgroundColor: "#fff",
@@ -269,17 +255,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingBottom: 24,
-  },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Inter",
+    fontWeight: "700",
     color: "#fff",
-    flex: 1,
+    alignSelf: "center",
     textAlign: "center",
+    marginBottom: 20,
   },
   dropdown: {
     backgroundColor: "#fff",

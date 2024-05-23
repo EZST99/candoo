@@ -232,16 +232,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-
     fontFamily: "Inter",
     fontWeight: "700",
     color: "#fff",
     alignSelf: "center",
     textAlign: "center",
     marginBottom: 20,
-  },
-  items: {
-    marginTop: 30,
   },
   item: {
     backgroundColor: "#fff",
@@ -250,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   itemLeft: {
     flexDirection: "row",
@@ -258,8 +254,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   square: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
     borderRadius: 5,
     marginRight: 15,
   },
