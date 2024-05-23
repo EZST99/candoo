@@ -67,36 +67,36 @@ function CategoryCreation({ back }: Props) {
   };
 
   const colorsList = [
-    "darkred",
-    "firebrick",
-    "crimson",
-    "red",
-    "orangered",
-    "tomato",
-    "indianred",
-    "orange",
-    "gold",
-    "yellow",
-    "greenyellow",
-    "lightgreen",
-    "green",
-    "lightseagreen",
-    "limegreen",
-    "lightskyblue",
-    "skyblue",
-    "dodgerblue",
-    "royalblue",
-    "blue",
-    "darkblue",
-    "purple",
-    "darkmagenta",
-    "magenta",
-    "hotpink",
-    "pink",
-    "lightpink",
-    "white",
-    "black",
-    "gray",
+    { name: "Dark Red", value: "darkred" },
+    { name: "Fire Brick", value: "firebrick" },
+    { name: "Crimson", value: "crimson" },
+    { name: "Red", value: "red" },
+    { name: "Orange Red", value: "orangered" },
+    { name: "Tomato", value: "tomato" },
+    { name: "Indian Red", value: "indianred" },
+    { name: "Orange", value: "orange" },
+    { name: "Gold", value: "gold" },
+    { name: "Yellow", value: "yellow" },
+    { name: "Green Yellow", value: "greenyellow" },
+    { name: "Light Green", value: "lightgreen" },
+    { name: "Green", value: "green" },
+    { name: "Light Sea Green", value: "lightseagreen" },
+    { name: "Lime Green", value: "limegreen" },
+    { name: "Light Sky Blue", value: "lightskyblue" },
+    { name: "Sky Blue", value: "skyblue" },
+    { name: "Dodger Blue", value: "dodgerblue" },
+    { name: "Royal Blue", value: "royalblue" },
+    { name: "Blue", value: "blue" },
+    { name: "Dark Blue", value: "darkblue" },
+    { name: "Purple", value: "purple" },
+    { name: "Dark Magenta", value: "darkmagenta" },
+    { name: "Magenta", value: "magenta" },
+    { name: "Hot Pink", value: "hotpink" },
+    { name: "Pink", value: "pink" },
+    { name: "Light Pink", value: "lightpink" },
+    { name: "White", value: "white" },
+    { name: "Black", value: "black" },
+    { name: "Gray", value: "gray" },
   ];
 
   return (
@@ -114,7 +114,7 @@ function CategoryCreation({ back }: Props) {
           }}
         />
         <View style={styles.titleContainer}>
-          <View>
+          <View style={styles.arrowButton}>
             <AntDesign
               name="arrowleft"
               size={24}
@@ -122,7 +122,14 @@ function CategoryCreation({ back }: Props) {
               onPress={back}
             />
           </View>
-          <Text style={styles.title}>Create Task</Text>
+          <Text style={styles.title}>Create Category</Text>
+          <View style={styles.arrowButton}>
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="transparent"
+            />
+          </View>
         </View>
         <View style={styles.form}>
           <TaskInput
@@ -144,14 +151,14 @@ function CategoryCreation({ back }: Props) {
             }}
           >
             {color != "" ? (
-              <Text>{color}</Text>
+              <Text>{colorsList.find((c) => c.value === color)?.name}</Text>
             ) : (
               <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>Pick a color</Text>
             )}
           </View>
           <View style={styles.colorPicker}>
             {colorsList.map((color) => (
-              <ColorButton key={color} color={color} />
+              <ColorButton key={color.value} color={color.value} />
             ))}
           </View>
         </View>
@@ -171,7 +178,7 @@ function CategoryCreation({ back }: Props) {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    padding: 24,
+    padding: 20,
   },
   form: {
     backgroundColor: "#fff",
@@ -190,8 +197,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
+    justifyContent: 'space-between',
     alignItems: "center",
-    paddingBottom: 24,
+    marginBottom: 20,
+
   },
   title: {
     fontSize: 24,
@@ -199,6 +208,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     textAlign: "center",
+
   },
   colorPicker: {
     backgroundColor: "#fff",
@@ -225,6 +235,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  arrowButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default CategoryCreation;

@@ -17,7 +17,7 @@ interface Props extends TouchableOpacityProps {
 const CategoryItem = (props: Props) => {
   return (
     <TouchableOpacity
-      key={props.category_id}
+      key={parseInt(props.category_id)}
       onPress={() => router.push(`/tasks?category_id=${props.category_id}`)} //--> route to tasks with the category id passed (select * from tasks where category_id = ...)
     >
       <View key={props.category_id} style={styles.item}>
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
   itemLeft: {
     flexDirection: "row",
     alignItems: "center",
-    flexWrap: "wrap",
+    flexWrap: "wrap"
   },
   square: {
     width: 25,
     height: 25,
-    borderRadius: 10,
+    borderRadius: 5,
     marginRight: 15,
   },
   categoryText: {
