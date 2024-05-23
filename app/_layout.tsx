@@ -1,17 +1,12 @@
-import { Inter_900Black, useFonts } from "@expo-google-fonts/inter";
-import { Stack } from "expo-router";
-import "react-native-reanimated";
-import AuthProvider from "../common/AuthProvider";
+import { Stack } from 'expo-router';
+import 'react-native-reanimated';
+import AuthProvider from '../common/AuthProvider';
 
 function AppLayout() {
-  const [fontsLoaded] = useFonts({
-    Inter: Inter_900Black,
-  });
-
   return (
-    <AuthProvider fontsLoaded={fontsLoaded}>
+    <AuthProvider>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
       </Stack>
     </AuthProvider>
   );
