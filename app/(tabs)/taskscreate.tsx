@@ -235,6 +235,8 @@ function TaskCreation({ back }: Props) {
               </View>
             </TouchableWithoutFeedback>
           )}
+          {/* Abstand nach dem DatePicker */}
+          <View style={{ height: 110 }} />
         </ScrollView>
       </View>
 
@@ -289,6 +291,12 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 20,
     textAlign: "center",
+  },
+  dateTimePickerContainer: {
+    marginBottom: 10, // Abstand unterhalb des DateTimePicker
+  },
+  pickDueDateContainer: {
+    marginBottom: 10, // Abstand unterhalb des Pick Due Date
   },
 });
 
