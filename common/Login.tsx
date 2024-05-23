@@ -13,6 +13,7 @@ interface LoginProps {
 function Login({ back }: LoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { setSessionId } = useUser();
 
   async function handleLogin() {
@@ -23,6 +24,14 @@ function Login({ back }: LoginProps) {
       },
       body: JSON.stringify({ username, password }),
     })
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          setError("Invalid credentials");
+
+        }
+        return response;
+      })
       .then((response) => response.json())
       .then((data) => {
         SecureStore.setItem("sessionId", data.sessionId);
@@ -63,6 +72,7 @@ function Login({ back }: LoginProps) {
             secureTextEntry
           />
         </View>
+        <Text style={{ color: "red" }}>{error}</Text>
       </View>
       <View style={styles.btn}>
         <Button title="Let's get started" onPress={handleLogin} />
