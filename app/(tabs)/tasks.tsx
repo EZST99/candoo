@@ -10,11 +10,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView,
+  TextInput,
 } from "react-native";
 import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/PlusButton";
 import { tasks as tasksTable } from "../../common/db/schema";
 import { MarkAsDoneResult } from "../api/markAsDone+api";
+import { FontAwesome6 } from "@expo/vector-icons";
+//import { mdiMagnify } from '@mdi/js';
 
 interface Category {
   category_id: number;
@@ -25,14 +29,14 @@ interface Category {
 export default function Tasks() {
   const [tasks, setTasks] = useState<
     (InferSelectModel<typeof tasksTable> & { color: string })[]
-  >([]); // Definiere den Typ für das tasks-Array
+  >([]);
   const router = useRouter();
   const { category_id } = useLocalSearchParams<{ category_id: string }>();
   const [category, setCategory] = useState<Category[] | undefined>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useFocusEffect(
     useCallback(() => {
-      console.log("current category id:" + category_id);
       getTasks();
       getCategory();
     }, [category_id])
@@ -42,10 +46,7 @@ export default function Tasks() {
     try {
       let url = "/api/taskView";
       if (category_id !== undefined) {
-        console.log("category id exists, view from category");
         url = `/api/taskView?category_id=${category_id}`;
-      } else {
-        console.log("category id does not exist, view all");
       }
 
       let data = await authenticatedFetch<
@@ -56,9 +57,7 @@ export default function Tasks() {
           "Content-Type": "application/json",
         },
       });
-      console.log("tasks from category: ");
-      console.log(data);
-      // Fetch the category color for each task
+
       data = await Promise.all(
         data.map(async (task) => {
           let color = await getCategoryColor(task.category_id);
@@ -77,10 +76,9 @@ export default function Tasks() {
   async function getCategory() {
     try {
       if (category_id === undefined) {
-        console.log("category id does not exist, don't fetch category");
         return;
       }
-      console.log("category id exists");
+
       let url = `/api/categoryDetails?category_id=${category_id}`;
       const data = await authenticatedFetch(url, {
         method: "GET",
@@ -88,10 +86,7 @@ export default function Tasks() {
           "Content-Type": "application/json",
         },
       });
-      console.log("category: ");
-      console.log(data);
-      console.log("categoryname: ");
-      console.log(data[0].categoryname);
+
       setCategory(data);
     } catch (error) {
       console.error(error);
@@ -107,13 +102,12 @@ export default function Tasks() {
           "Content-Type": "application/json",
         },
       });
-      return data[0]?.color; // Access the color property from the response
+      return data[0]?.color;
     } catch (error) {
       console.error(error);
     }
   }
 
-  // Funktion zum Aktualisieren des ausgewählten Zustands eines Tasks
   const handleTaskSelection = (taskId: number) => {
     const newDoneState = !tasks.find((task) => task.task_id === taskId)
       ?.is_done;
@@ -175,11 +169,32 @@ export default function Tasks() {
     );
   };
 
+  // Funktion zum Filtern der Tasks basierend auf dem Suchbegriff
+  const filterTasks = (task: InferSelectModel<typeof tasksTable>) => {
+    return task.taskname.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+
+  // Event-Handler für die Änderung des Suchbegriffs
+  const handleSearchTermChange = (text: string) => {
+    setSearchTerm(text);
+  };
+
+  // Anwenden des Filters auf das tasks-Array
+  const filteredTasks = tasks.filter(filterTasks);
+
   return (
     <>
+      <SafeAreaView style={{ backgroundColor: "#FF0000" }}>
+        <TextInput
+          style={styles.search}
+          placeholder="Search"
+          onChangeText={handleSearchTermChange}
+        />
+        <FontAwesome6 name="magnifying-glass" style={styles.magnifyer} />
+      </SafeAreaView>
+
       <View style={styles.container}>
         <LinearGradient
-          // Background Linear Gradient
           colors={["rgba(255, 0, 0, 0.72)", "white"]}
           style={{
             position: "absolute",
@@ -189,14 +204,11 @@ export default function Tasks() {
             height: "110%",
           }}
         />
-        {/* Today's Tasks */}
         <Text style={styles.sectionTitle}>
           {category_id ? category?.[0]?.categoryname + " \n" : "All "}Tasks
         </Text>
-
-        {/* Rendern der gefetchten Elemente */}
         <ScrollView>
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <TaskItem
               taskname={task.taskname}
               color={task.color}
@@ -206,7 +218,6 @@ export default function Tasks() {
             />
           ))}
         </ScrollView>
-        {/* "+"-Button am unteren Rand */}
       </View>
       <View style={styles.addButton}>
         <ButtonCircle onPress={() => router.push("taskscreate")}>
@@ -272,5 +283,23 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  search: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    backgroundColor: "white",
+    borderRadius: 10,
+    margin: 10,
+    paddingLeft: 30, 
+    position: "relative", 
+  },
+  magnifyer: {
+    position: "absolute",
+    top: 20, 
+    left: 15, 
+    fontSize: 20,
+    color: "gray",
+    opacity: 0.5,
   },
 });
