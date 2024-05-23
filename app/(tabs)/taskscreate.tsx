@@ -18,6 +18,7 @@ import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import TaskInput from "../../common/components/TaskInput";
 import { TaskCreationRequest } from "../api/taskCreation+api";
+import ScrollPicker from "react-native-wheel-scrollview-picker";
 
 interface Category {
   categoryname: string;
@@ -31,7 +32,9 @@ function TaskCreation() {
   const [due_date, setDue_date] = useState<Date | null>(null);
   const [show, setShow] = useState(false);
   const [importance, setImportance] = useState("");
+  const [showImportance, setShowImportance] = useState(false);
   const [urgency, setUrgency] = useState("");
+  const [showUrgency, setShowUrgency] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -163,40 +166,30 @@ function TaskCreation() {
             onChangeText={setDescription}
             placeholder="Description"
           />
-          <TaskInput
-            keyboardType="number-pad"
-            value={importance}
-            onChangeText={setImportance}
-            placeholder="Pick Importance"
-          />
-          <TaskInput
-            keyboardType="number-pad"
-            value={urgency}
-            onChangeText={setUrgency}
-            placeholder="Pick Urgency"
-          />
-
-          {show ? (
-            <View
-              style={{
-                backgroundColor: "#fff",
-                borderWidth: 3,
-                borderColor: "rgba(0, 0, 0, 0.19)",
-                margin: 10,
-                borderRadius: 20,
-                alignItems: "center",
-                justifyContent: "center",
+          {showImportance ? (
+            <ScrollPicker
+              dataSource={["Pick Importance", "1", "2", "3", "4", "5"]}
+              selectedIndex={importance == "" ? 0 : parseInt(importance)}
+              renderItem={(data, index) => {
+                return (<View><Text style={data === "Pick Importance" ? { color: "rgba(0, 0, 0, 0.19)" } : {}}>{data}</Text></View>);
               }}
-            >
-              <DateTimePicker
-                mode="date"
-                value={due_date ?? new Date()}
-                onChange={setDate}
-              />
-            </View>
+              onValueChange={(data, selectedIndex) => {
+                if (data === "Pick Importance") {
+                  // Ignore selection of the disabled option
+                  return;
+                }
+                setImportance(data);
+                setShowImportance(false);
+              }}
+              wrapperHeight={150}
+              wrapperBackground="#FFFFFF"
+              itemHeight={50}
+              highlightColor="rgba(0, 0, 0, 0.19)"
+              highlightBorderWidth={3}
+            />
           ) : (
             <TouchableWithoutFeedback
-              onPress={() => setShow(true)}
+              onPress={() => setShowImportance(true)}
               style={{ padding: 10 }}
             >
               <View
@@ -211,12 +204,62 @@ function TaskCreation() {
                   paddingVertical: 10,
                 }}
               >
-                {due_date == null ? (
+                {importance == "" ? (
                   <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>
-                    Pick Due Date
+                    Pick Importance
                   </Text>
                 ) : (
-                  <Text>{due_date.toDateString()}</Text>
+                  <Text>Importance: {importance}</Text>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          )}
+
+
+          {showUrgency ? (
+            <ScrollPicker
+              dataSource={["Pick Urgency", "1", "2", "3", "4", "5"]}
+              selectedIndex={urgency == "" ? 0 : parseInt(urgency)}
+              renderItem={(data, index) => {
+                return (<View><Text style={data === "Pick Urgency" ? { color: "rgba(0, 0, 0, 0.19)" } : {}}>{data}</Text></View>);
+              }}
+              onValueChange={(data, selectedIndex) => {
+                if (data === "Pick Urgency") {
+                  // Ignore selection of the disabled option
+                  return;
+                }
+                setUrgency(data);
+                setShowUrgency(false);
+              }}
+              wrapperHeight={150}
+              wrapperBackground="#FFFFFF"
+              itemHeight={50}
+              highlightColor="rgba(0, 0, 0, 0.19)"
+              highlightBorderWidth={3}
+            />
+          ) : (
+            <TouchableWithoutFeedback
+              onPress={() => setShowUrgency(true)}
+              style={{ padding: 10 }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  borderWidth: 3,
+                  borderColor: "rgba(0, 0, 0, 0.19)",
+                  margin: 10,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingVertical: 10,
+                }}
+              >
+                {urgency == "" ? (
+                  <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>
+                    Pick Urgency
+                  </Text>
+                ) : (
+                  <Text>Urgency: {urgency}</Text>
                 )}
               </View>
             </TouchableWithoutFeedback>
