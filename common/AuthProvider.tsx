@@ -5,6 +5,8 @@ import Welcome from "./Welcome";
 
 interface User {
   username: string;
+  email: string;
+  password: string;
 }
 
 interface AuthProviderData {
