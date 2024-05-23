@@ -1,10 +1,14 @@
-import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from "expo-splash-screen";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import Welcome from "./Welcome";
+import { Image } from 'expo-image';
+import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Welcome from './Welcome';
 
 interface User {
   username: string;
+  email: string;
+  password: string;
 }
 
 interface AuthProviderData {
@@ -14,22 +18,22 @@ interface AuthProviderData {
 
 const AuthContext = createContext<AuthProviderData>({
   user: null,
-  setSessionId: () => console.log("not initialized"),
+  setSessionId: () => console.log('not initialized'),
 });
 export const useUser = () => useContext(AuthContext);
 SplashScreen.preventAutoHideAsync();
 
 interface Props {
   children: React.ReactNode;
-  fontsLoaded: boolean;
 }
 
-function AuthProvider({ children, fontsLoaded }: Props) {
+function AuthProvider({ children }: Props) {
   const [sessionId, setSessionId] = useState<null | string>(
-    SecureStore.getItem("sessionId")
+    SecureStore.getItem('sessionId')
   );
   const [user, setUser] = useState<User | null>(null);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [isShowingAnimation, setIsShowingAnimation] = useState(true);
 
   useEffect(() => {
     if (sessionId == null) {
@@ -38,7 +42,7 @@ function AuthProvider({ children, fontsLoaded }: Props) {
       return;
     }
 
-    fetch("/api/user", {
+    fetch('/api/user', {
       headers: {
         Authorization: `Bearer ${sessionId}`,
       },
@@ -54,9 +58,25 @@ function AuthProvider({ children, fontsLoaded }: Props) {
   }, [sessionId]);
 
   useEffect(() => {
-    if (!appIsReady || !fontsLoaded) return;
+    if (!appIsReady) return;
     SplashScreen.hideAsync();
-  }, [fontsLoaded, appIsReady]);
+  }, [appIsReady]);
+
+  if (isShowingAnimation) {
+    setTimeout(() => {
+      setIsShowingAnimation(false);
+    }, 1200);
+
+    return (
+      <View style={styles.container}>
+        <Image
+          style={styles.image}
+          source={require('../assets/splash.gif')}
+          contentFit='contain'
+        />
+      </View>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user, setSessionId }}>
@@ -64,5 +84,18 @@ function AuthProvider({ children, fontsLoaded }: Props) {
     </AuthContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    flex: 1,
+    width: '100%',
+  },
+});
 
 export default AuthProvider;

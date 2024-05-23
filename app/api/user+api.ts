@@ -5,5 +5,8 @@ export async function GET(request: Request) {
 
   return Response.json({
     username: user.username,
+    email: user.email,
+    password: user.password,
+    
   });
 }

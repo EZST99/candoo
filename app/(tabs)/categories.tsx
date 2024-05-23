@@ -1,11 +1,13 @@
+import React, { useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import CategoryItem from "../../common/components/categoryItem";
+import CategoryCreation from "../category-create/categorycreate";
 
 interface Category {
   categoryname: string;
@@ -16,12 +18,32 @@ interface Category {
 export default function category() {
   const [categories, setCategories] = useState<Category[]>([]); // Definiere den Typ für das category-Array
   const router = useRouter();
+  const [view, setView] = React.useState<null | "createCategories">(null);
 
   useFocusEffect(
     useCallback(() => {
       getCategory();
     }, [])
   );
+
+  useEffect(() => {
+    const backAction = () => {
+      if (view !== null) {
+        setView(null);
+        return true;
+      }
+
+      BackHandler.exitApp();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [view]);
 
   async function getCategory() {
     try {
@@ -43,38 +65,44 @@ export default function category() {
 
   return (
     <>
-      <View style={styles.container}>
-        <LinearGradient
-          // Background Linear Gradient
-          colors={["rgba(255, 0, 0, 0.72)", "white"]}
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0,
-            height: "110%",
-          }}
-        />
-        <Text style={styles.title}>Categories</Text>
-        <ScrollView>
-          {categories.map((category) => (
-            <CategoryItem
-              categoryname={category.categoryname}
-              color={category.color}
-              category_id={category.category_id}
-            />
-          ))}
-        </ScrollView>
-      </View>
-      <View style={styles.addButton}>
-        <ButtonCircle
-          onPress={() => router.push("../category-create/categorycreate")}
-        >
-          <View>
-            <AntDesign name="plus" size={24} color="white" />
+
+      {view === null ? (
+        <View style={styles.container}>
+          <LinearGradient
+            // Background Linear Gradient
+            colors={["rgba(255, 0, 0, 0.72)", "white"]}
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: "110%",
+            }}
+          />
+          <Text style={styles.title}>Categories</Text>
+          <ScrollView>
+            {categories.map((category) => (
+              <CategoryItem
+                categoryname={category.categoryname}
+                color={category.color}
+                category_id={category.category_id.toString()}
+              />
+            ))}
+          </ScrollView>
+          <View style={styles.addButton}>
+            <ButtonCircle
+              onPress={() => setView("createCategories")}
+            >
+              <View>
+                <AntDesign name="plus" size={24} color="white" />
+              </View>
+            </ButtonCircle>
           </View>
-        </ButtonCircle>
-      </View>
+        </View>
+
+      ) : null}
+      {view === "createCategories" ? <CategoryCreation back={() => setView(null)} /> : null}
+
     </>
   );
 }
@@ -95,8 +123,8 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     bottom: 24,
-    width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "center",
   },
 });
