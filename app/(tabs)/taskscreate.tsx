@@ -264,6 +264,51 @@ function TaskCreation() {
               </View>
             </TouchableWithoutFeedback>
           )}
+          {show ? (
+            <View
+              style={{
+                backgroundColor: "#fff",
+                borderWidth: 3,
+                borderColor: "rgba(0, 0, 0, 0.19)",
+                margin: 10,
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <DateTimePicker
+                mode="date"
+                value={due_date ?? new Date()}
+                onChange={setDate}
+              />
+            </View>
+          ) : (
+            <TouchableWithoutFeedback
+              onPress={() => setShow(true)}
+              style={{ padding: 10 }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  borderWidth: 3,
+                  borderColor: "rgba(0, 0, 0, 0.19)",
+                  margin: 10,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingVertical: 10,
+                }}
+              >
+                {due_date == null ? (
+                  <Text style={{ color: "rgba(0, 0, 0, 0.19)" }}>
+                    Pick Due Date
+                  </Text>
+                ) : (
+                  <Text>{due_date.toDateString()}</Text>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          )}
           {/* Abstand nach dem DatePicker */}
           <View style={{ height: 110 }} />
         </ScrollView>
