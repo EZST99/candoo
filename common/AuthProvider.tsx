@@ -1,8 +1,7 @@
-import { Image } from 'expo-image';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Welcome from './Welcome';
 
 interface User {
@@ -65,15 +64,11 @@ function AuthProvider({ children }: Props) {
   if (isShowingAnimation) {
     setTimeout(() => {
       setIsShowingAnimation(false);
-    }, 1200);
+    }, 1400);
 
     return (
       <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={require('../assets/splash.gif')}
-          contentFit='contain'
-        />
+        <Image style={styles.image} source={require('../assets/splash.gif')} />
       </View>
     );
   }
@@ -95,6 +90,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: '100%',
+    objectFit: 'contain',
   },
 });
 
