@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -283,6 +284,12 @@ export default function Tasks() {
           {category_id ? category?.[0]?.categoryname + ' \n' : 'All '}Tasks
         </Text>
         <ScrollView>
+          {tasks.every((task) => task.is_done) ? (
+            <Image
+              source={require('../../assets/all-done.png')}
+              style={{ width: 250, height: 250, alignSelf: 'center' }}
+            />
+          ) : null}
           {filteredTasks
             .sort((a, b) => {
               switch (sort) {
@@ -334,11 +341,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontFamily: "Inter",
-    fontWeight: "700",
-    color: "#fff",
-    alignSelf: "center",
-    textAlign: "center",
+    fontFamily: 'Inter',
+    fontWeight: '700',
+    color: '#fff',
+    alignSelf: 'center',
+    textAlign: 'center',
     marginBottom: 20,
   },
   item: {
