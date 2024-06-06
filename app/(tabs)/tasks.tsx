@@ -1,3 +1,4 @@
+{/*
 import { AntDesign, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import { InferSelectModel } from 'drizzle-orm';
 import CheckBox from 'expo-checkbox';
@@ -110,47 +111,46 @@ export default function Tasks() {
     }
   }
 
-  const handleTaskSelection = (taskId: number) => {
-    const newDoneState = !tasks.find((task) => task.task_id === taskId)
-      ?.is_done;
+  const handleTaskSelection = async (taskId: number) => {
+    const task = tasks.find((task) => task.task_id === taskId);
+    const newDoneState = !task?.is_done;
+  
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.task_id === taskId ? { ...task, is_done: newDoneState } : task
       )
     );
-
-    authenticatedFetch<MarkAsDoneResult>('/api/markAsDone', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        task_id: taskId,
-        is_done: newDoneState,
-      }),
-    })
-      .then(({ task_id, is_done }) => {
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.task_id === task_id ? { ...task, is_done } : task
-          )
-        );
-      })
-      .catch((error) => {
-        console.error('Task selection failed:', error);
+  
+    try {
+      const response = await authenticatedFetch<MarkAsDoneResult>('/api/markAsDone', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ task_id: taskId, is_done: newDoneState }),
       });
+  
+      if (newDoneState && task) {
+        alert(`Du hast ${task.importance} Punkte erhalten!`);
+      }
+    } catch (error) {
+      console.error('Task selection failed:', error);
+    }
   };
+  
 
   const TaskItem = ({
     taskname,
     color,
     task_id,
     is_done,
+    points,
   }: {
     taskname: string;
     color: string;
     task_id: string;
     is_done: boolean;
+    points: number;
   }) => {
     return (
       <TouchableOpacity
@@ -166,10 +166,12 @@ export default function Tasks() {
             value={is_done}
             onValueChange={() => handleTaskSelection(parseInt(task_id))}
           />
+          <Text style={styles.pointsText}>{points} Punkte</Text> {/* Punkte anzeigen *//*}
         </View>
       </TouchableOpacity>
     );
   };
+
 
   // Funktion zum Filtern der Tasks basierend auf dem Suchbegriff
   const filterTasks = (task: InferSelectModel<typeof tasksTable>) => {
@@ -326,7 +328,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     /*alignItems: "center",
-    justifyContent: "center",*/
+    justifyContent: "center",*/ /*
   },
   tasksWrapper: {
     paddingTop: 60,
@@ -399,4 +401,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 200,
   },
+  pointsText: {
+    fontSize: 16,
+    color: 'green', // Beispiel: Farbe grün
+    fontWeight: 'bold', // Beispiel: Fettdruck
+  },
 });
+*/}
