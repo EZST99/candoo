@@ -14,7 +14,9 @@ function Profile() {
   const [userInfo, setUserInfo] = useState({
     username: user?.username || "",
     email: user?.email || "",
-    password: ""
+    oldpassword: "",
+    password: "",
+    passwordconfirm: ""
   });
   const [showEdit, setShowEdit] = useState(false);
 
@@ -28,26 +30,47 @@ function Profile() {
     console.log("session id: ", sessionId);
   }, []);
 
+  function resetPasswordForm() {
+    userInfo.oldpassword = "";
+    userInfo.password = "";
+    userInfo.passwordconfirm = "";
+    return;
+  }
+
   const validateInput = () => {
     if (!userInfo.username || !userInfo.email) {
       Alert.alert("Validation Error", "All fields must be filled.");
       return false;
     }
+    // if one or more password fields are filled out, check if all are filled out
+    if (userInfo.oldpassword || userInfo.password || userInfo.passwordconfirm) {
+      if (!userInfo.oldpassword || !userInfo.password || !userInfo.passwordconfirm) {
+        Alert.alert("Validation Error", "All fields must be filled if you want to change your password.");
+        return false;
+      }
+    }
+
+    if (userInfo.password !== userInfo.passwordconfirm) {
+      Alert.alert("Validation Error", "New Passwords do not match.");
+      return false;
+    }
+
     return true;
   };
 
   async function handleUserUpdate() {
     console.log('handleUserUpdate is called');
     if (!validateInput()) {
+      resetPasswordForm();
       return;
     }
 
     const body: UserUpdateRequest = {
       username: userInfo.username,
-      email: userInfo.email
+      email: userInfo.email,
+      oldpassword: userInfo.oldpassword,
+      password: userInfo.password
     };
-
-    console.log("User Update Request:", body);
 
     authenticatedFetch("/api/userUpdate", {
       method: "PUT",
@@ -65,6 +88,7 @@ function Profile() {
         console.error("User Update failed:", error);
         Alert.alert("Error", "Failed to update user info.");
       });
+    resetPasswordForm();
   }
 
   return (
@@ -99,6 +123,48 @@ function Profile() {
             (<Text style={styles.value}>{userInfo.email}</Text>)
           }
         </View>
+
+
+        {showEdit ?
+          (
+            <View>
+              <View style={styles.userDetail}>
+                <Text style={styles.label}>Old Password: </Text>
+                <TextInput
+                  secureTextEntry
+                  style={styles.value}
+                  onChangeText={(text) => setUserInfo({ ...userInfo, oldpassword: text })}
+                  value={userInfo.oldpassword}
+                  placeholder="Enter old Password"
+                />
+              </View>
+              <View style={styles.userDetail}>
+                <Text style={styles.label}>New Password: </Text>
+                <TextInput
+                  secureTextEntry
+                  style={styles.value}
+                  onChangeText={(text) => setUserInfo({ ...userInfo, password: text })}
+                  value={userInfo.password}
+                  placeholder="Enter new Password"
+                />
+              </View>
+              <View style={styles.userDetail}>
+                <Text style={styles.label}>Confirm Password: </Text>
+                <TextInput
+                  secureTextEntry
+                  style={styles.value}
+                  onChangeText={(text) => setUserInfo({ ...userInfo, passwordconfirm: text })}
+                  value={userInfo.passwordconfirm}
+                  placeholder="Confirm new Password"
+                />
+              </View>
+            </View>
+
+          )
+          :
+          (<></>)
+        }
+
       </View>
       {showEdit ?
         (<View style={styles.btn}>
