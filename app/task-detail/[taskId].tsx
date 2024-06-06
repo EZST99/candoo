@@ -12,11 +12,13 @@ import { categories as categoriesTable } from "../../common/db/schema";
 import { TaskUpdateRequest } from "../api/taskDetailEdit+api";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 
+
 const TaskDetailScreen = () => {
   const [show, setShow] = useState(false);
   const [task, setTask] = useState({
     taskname: "",
     category_id: "",
+    category_name: "",
     due_date: "",
     importance: "",
     urgency: "",
@@ -43,9 +45,13 @@ const TaskDetailScreen = () => {
     );
     console.log("Task data:");
     console.log(taskData);
+    const category = categories.find(
+      (cat) => cat.category_id.toString() === taskData.category_id.toString()
+    );
     setTask({
       taskname: taskData.taskname,
       category_id: taskData.category_id,
+      category_name: category ? category.categoryname : "",
       due_date: new Date(taskData.due_date).toISOString(),
       importance: taskData.importance,
       urgency: taskData.urgency,
@@ -64,11 +70,11 @@ const TaskDetailScreen = () => {
 
   useEffect(() => {
     fetchTask();
-  }, []);
+  }, [categories]);
 
   useEffect(() => {
     fetchCategoryname();
-  }, [task.category_id]);
+  }, []);
 
   const validateInput = () => {
     if (
@@ -81,7 +87,7 @@ const TaskDetailScreen = () => {
     ) {
       Alert.alert(
         "Validation Error",
-        "Importance and urgency must be between 1 and 5."
+        "Importance and urgency must between 1 to 5."
       );
       return false;
     }
@@ -136,20 +142,19 @@ const TaskDetailScreen = () => {
         }}
       />
       <View style={styles.tasksWrapper}>
-        <TextInput
-          style={styles.categoryTitle}
-          onChangeText={(text) => setTask({ ...task, category_id: text })}
-          value={task.category_id}
-        />
         <Dropdown
           data={categories}
-          placeholderStyle={{ color: "rgba(0, 0, 0, 0.19)" }}
+          placeholderStyle={{ color: "white" }}
           labelField="categoryname"
           valueField="category_id"
-          placeholder="Select Category"
+          placeholder={task.category_name || "Select Category"}
           value={task.category_id}
           onChange={(item) => {
-            setTask({ ...task, category_id: item.category_id.toString() });
+            setTask({
+              ...task,
+              category_id: item.category_id.toString(),
+              category_name: item.categoryname,
+            });
           }}
         />
 
