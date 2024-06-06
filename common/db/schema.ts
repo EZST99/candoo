@@ -15,6 +15,7 @@ export const users = mysqlTable("users", {
   password: varchar("password", { length: 256 }).notNull(),
   salt: varchar("salt", { length: 256 }).notNull(),
   session: varchar("session", { length: 256 }).unique(),
+  total_points: int("total_points").default(0),  // Neue Spalte
 });
 
 export const tasks = mysqlTable("tasks", {
@@ -31,6 +32,7 @@ export const tasks = mysqlTable("tasks", {
   importance: int("importance").default(3).notNull(),
   urgency: int("urgency").default(3).notNull(),
   is_done: boolean("is_done").default(false).notNull(),
+  points: int("points").default(0),  // Neue Spalte
 });
 
 export const categories = mysqlTable("categories", {
