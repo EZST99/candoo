@@ -1,4 +1,3 @@
-// TaskDetailScreen.tsx
 import { Feather } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { InferSelectModel } from "drizzle-orm";
@@ -11,7 +10,7 @@ import authenticatedFetch from "../../common/authenticatedFetch";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { categories as categoriesTable } from "../../common/db/schema";
 import { TaskUpdateRequest } from "../api/taskDetailEdit+api";
-import DateTimePicker, {DateTimePickerEvent,} from "@react-native-community/datetimepicker";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 
 const TaskDetailScreen = () => {
   const [show, setShow] = useState(false);
@@ -22,7 +21,6 @@ const TaskDetailScreen = () => {
     importance: "",
     urgency: "",
     description: "",
-    
   });
   const { taskId } = useLocalSearchParams<{ taskId: string }>();
   const [categories, setCategories] = useState<
@@ -30,11 +28,14 @@ const TaskDetailScreen = () => {
   >([]);
 
   const setDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || new Date(task.due_date);
-    setTask({ ...task, due_date: currentDate.toISOString() });
+    if (selectedDate) {
+      const utcDate = new Date(
+        selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+      );
+      setTask({ ...task, due_date: utcDate.toISOString() });
+    }
     setShow(false); // Close the DateTimePicker after selecting a date
   };
-  
 
   const fetchTask = async () => {
     const taskData = await authenticatedFetch(
@@ -45,7 +46,7 @@ const TaskDetailScreen = () => {
     setTask({
       taskname: taskData.taskname,
       category_id: taskData.category_id,
-      due_date: new Date(taskData.due_date).toDateString(),
+      due_date: new Date(taskData.due_date).toISOString(),
       importance: taskData.importance,
       urgency: taskData.urgency,
       description: taskData.description,
@@ -74,11 +75,13 @@ const TaskDetailScreen = () => {
       isNaN(parseInt(task.importance)) ||
       isNaN(parseInt(task.urgency)) ||
       parseInt(task.importance) < 1 ||
-      parseInt(task.urgency) < 1
+      parseInt(task.urgency) < 1 ||
+      parseInt(task.importance) > 5 ||
+      parseInt(task.urgency) > 5
     ) {
       Alert.alert(
         "Validation Error",
-        "Importance and urgency must be positive numbers."
+        "Importance and urgency must be between 1 and 5."
       );
       return false;
     }
@@ -158,27 +161,29 @@ const TaskDetailScreen = () => {
           placeholder="Task Name"
         />
         <View style={styles.items}>
-        <TouchableWithoutFeedback onPress={() => setShow(true)}>
+          <TouchableWithoutFeedback onPress={() => setShow(true)}>
+            <View style={styles.itemLeft}>
+              {show && (
+                <DateTimePicker
+                  mode="date"
+                  onChange={setDate}
+                  value={new Date(task.due_date)}
+                />
+              )}
+              <Text style={styles.itemLeft}>
+                Due Date: {new Date(task.due_date).toLocaleDateString()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
           <View style={styles.itemLeft}>
-            {show && (
-              <DateTimePicker
-                mode="date"
-                onChange={setDate}
-                value={new Date(task.due_date)}
-              />
-            )}
-            <Text style={styles.itemLeft}>Due Date: {new Date(task.due_date).toLocaleDateString()}</Text>
+            <Text style={styles.itemLeft}>Importance: </Text>
+            <TextInput
+              style={styles.itemLeft}
+              keyboardType="number-pad"
+              onChangeText={(number) => setTask({ ...task, importance: number })}
+              value={task.importance.toString()}
+            />
           </View>
-        </TouchableWithoutFeedback>
-        <View style={styles.itemLeft}>
-        <Text style={styles.itemLeft}>Importance: </Text>
-          <TextInput
-          style={styles.itemLeft}
-            keyboardType="number-pad"
-            onChangeText={(number) => setTask({ ...task, importance: number })}
-            value={task.importance.toString()}
-          />
-        </View>
           <Text style={styles.itemLeft}>Description: {task.description}</Text>
           <TextInput
             style={styles.item}
