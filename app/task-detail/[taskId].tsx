@@ -129,6 +129,7 @@ const TaskDetailScreen = () => {
   }
 
   return (
+    
     <View style={styles.container}>
       <LinearGradient
         // Background Linear Gradient
