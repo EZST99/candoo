@@ -1,9 +1,10 @@
 import { and, eq, sql } from 'drizzle-orm';
+import authenticateUser from '../../common/db/authenticateUser';
 import db from '../../common/db/connection';
 import { tasks } from '../../common/db/schema';
 
 export async function GET(request: Request) {
-  const user = { user_id: 1 };
+  const user = await authenticateUser(request);
   const res = await db
     .select({
       points: sql`${tasks.importance} + DATEDIFF(${tasks.due_date}, ${tasks.completed_at})`,
