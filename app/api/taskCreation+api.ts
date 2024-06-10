@@ -1,6 +1,6 @@
-import authenticateUser from "../../common/db/authenticateUser";
-import db from "../../common/db/connection";
-import { tasks } from "../../common/db/schema";
+import authenticateUser from '../../common/db/authenticateUser';
+import db from '../../common/db/connection';
+import { tasks } from '../../common/db/schema';
 
 export interface TaskCreationRequest {
   category_id: number;
@@ -8,7 +8,6 @@ export interface TaskCreationRequest {
   due_date: Date;
   description: string;
   importance: number;
-  urgency: number;
 }
 
 export async function POST(request: Request) {
@@ -22,10 +21,9 @@ export async function POST(request: Request) {
     due_date: body.due_date,
     description: body.description,
     importance: body.importance,
-    urgency: body.urgency,
   });
 
   return new Response(JSON.stringify({ success: true }), {
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
   });
 }
