@@ -2,11 +2,12 @@ import * as SecureStore from "expo-secure-store";
 import { StyleSheet, View, Text, TextInput, Alert } from "react-native";
 import { useUser, } from "../../common/AuthProvider";
 import Button from "../../common/components/Button";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import ButtonCircle from "../../common/components/ButtonCircle";
 import { UserUpdateRequest } from "../api/userUpdate+api";
 import authenticatedFetch from "../../common/authenticatedFetch";
+import { useFocusEffect } from "expo-router";
 
 function Profile() {
   const { user, setSessionId } = useUser();
@@ -19,16 +20,19 @@ function Profile() {
     passwordconfirm: ""
   });
   const [showEdit, setShowEdit] = useState(false);
+  const [points, setPoints] = useState(0);
 
-  useEffect(() => {
-    const fetchSessionId = async () => {
-      const id = await SecureStore.getItemAsync('sessionId');
-      setSessionIdd(id);
+  useFocusEffect(
+    useCallback(() => {
+    const fetchPoints = async () => {
+      const data = await authenticatedFetch("/api/points");
+      console.log(data);
+      setPoints(data.points);
     };
 
-    fetchSessionId();
+    fetchPoints();
     console.log("session id: ", sessionId);
-  }, []);
+  }, []))
 
   function resetPasswordForm() {
     userInfo.oldpassword = "";
@@ -123,7 +127,10 @@ function Profile() {
             (<Text style={styles.value}>{userInfo.email}</Text>)
           }
         </View>
-
+        <View style={styles.userDetail}>
+          <Text style={styles.label}>Points: </Text>
+          <Text style={styles.value}>{points}</Text>
+        </View>
 
         {showEdit ?
           (
