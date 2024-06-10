@@ -1,7 +1,7 @@
-import { and, eq } from "drizzle-orm";
-import authenticateUser from "../../common/db/authenticateUser";
-import db from "../../common/db/connection";
-import { tasks } from "../../common/db/schema";
+import { and, eq } from 'drizzle-orm';
+import authenticateUser from '../../common/db/authenticateUser';
+import db from '../../common/db/connection';
+import { tasks } from '../../common/db/schema';
 
 interface MarkAsDoneBody {
   task_id: number;
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   // Mark task as done
   await db
     .update(tasks)
-    .set({ is_done })
+    .set({ is_done, completed_at: is_done ? new Date() : null })
     .where(and(eq(tasks.task_id, task_id), eq(tasks.user_id, user.user_id)));
 
   return new Response(

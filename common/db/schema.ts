@@ -3,7 +3,6 @@ import {
   date,
   int,
   mysqlTable,
-  timestamp,
   varchar,
 } from 'drizzle-orm/mysql-core';
 
@@ -31,7 +30,7 @@ export const tasks = mysqlTable('tasks', {
   description: varchar('description', { length: 256 }).default(''),
   importance: int('importance').default(3).notNull(),
   is_done: boolean('is_done').default(false).notNull(),
-  completed_at: timestamp('completed_at'),
+  completed_at: date('completed_at'),
 });
 
 export const categories = mysqlTable('categories', {
